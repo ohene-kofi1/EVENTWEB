@@ -1,0 +1,594 @@
+/* ============================================================
+   EVENTWEB — project token + component layer
+   Sits on top of the Modernist design system stylesheet.
+
+   Why this file exists: the four page files had drifted to 509
+   hardcoded hex values, 93 border-radius declarations and zero
+   design-system variables. Everything below re-expresses those
+   decisions as tokens so a change lands in one place.
+
+   Accent: the Modernist accent is red #ec3013, but the EVENTWEB
+   mark and all four pages are built on blue #1a3ee8. Blue is kept
+   as the brand accent because it clears 7.25:1 on white, where the
+   red manages 3.76:1 and fails AA for body text. The ramp below
+   is the declared override; nothing should hardcode blue again.
+   ============================================================ */
+
+:root {
+  /* --- ground + ink ------------------------------------------------ */
+  --ew-bg: #ffffff;
+  --ew-bg-sunken: #f7f8fa;
+  --ew-ink: #101215;
+  --ew-ink-strong: #000000;
+
+  /* --- neutral ramp (tuned to the white ground) -------------------- */
+  --ew-neutral-100: #f7f8fa;
+  --ew-neutral-200: #e8e9ed;
+  --ew-neutral-300: #e0e2e8;
+  --ew-neutral-400: #c3c7d0;
+  --ew-neutral-500: #9aa0aa;
+  --ew-neutral-600: #6c717c;
+  --ew-neutral-700: #4b5160;
+  --ew-neutral-800: #2b303b;
+  --ew-neutral-900: #101215;
+
+  /* --- accent ramp (brand blue) ------------------------------------ */
+  --ew-accent-100: #eef1ff;
+  --ew-accent-200: #d6deff;
+  --ew-accent-300: #adbcff;
+  --ew-accent-400: #6b86f5;
+  --ew-accent: #1a3ee8;
+  --ew-accent-500: #1a3ee8;
+  --ew-accent-600: #122ea8;
+  --ew-accent-700: #0e2478;
+  --ew-accent-800: #0a1a55;
+  --ew-accent-900: #071238;
+
+  /* --- text roles, all AA-verified against their own ground -------- */
+  --ew-text: var(--ew-ink);            /* 19.6:1 on white  */
+  --ew-text-muted: #6c717c;            /*  4.89:1 on white */
+  --ew-text-label: #4b5160;            /*  7.94:1 on white */
+  --ew-text-on-dark: #ffffff;
+  --ew-text-muted-on-dark: #a9aeb9;    /*  8.68:1 on #0c0e12 */
+
+  /* Dark panel ground, used by the login hero and the board header. */
+  --ew-dark: #0c0e12;
+  --ew-dark-raised: #141721;
+  --ew-dark-line: #242832;
+
+  /* --- category colors ---------------------------------------------
+     The brief names five categories. Each carries a color AND a
+     letter/label in the markup — color is never the only signal. */
+  --ew-cat-academic: #1a3ee8;
+  --ew-cat-social: #b3261e;
+  --ew-cat-sports: #0b6b3a;
+  --ew-cat-religious: #6b3fa0;
+  --ew-cat-business: #8a5a00;
+
+  /* --- structure ---------------------------------------------------
+     Modernist is a zero-radius system. Its readme is explicit:
+     "Do not round a corner anywhere". These stay 0 on purpose. */
+  --ew-radius: 0px;
+  --ew-rule: 2px;
+  --ew-rule-color: var(--ew-ink);
+  --ew-hairline: 1px solid var(--ew-neutral-200);
+
+  /* --- spacing (inherits the DS 1.00x scale) ----------------------- */
+  --ew-space-1: 4px;
+  --ew-space-2: 8px;
+  --ew-space-3: 12px;
+  --ew-space-4: 16px;
+  --ew-space-6: 24px;
+  --ew-space-8: 32px;
+  --ew-space-10: 40px;
+
+  /* --- type -------------------------------------------------------- */
+  --ew-font: "Archivo", system-ui, sans-serif;
+  --ew-font-grotesque: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
+  --ew-fs-micro: 12px;   /* floor. nothing renders below this. */
+  --ew-fs-small: 13.5px;
+  --ew-fs-body: 15px;
+  --ew-fs-lead: 16px;
+
+  /* --- motion ------------------------------------------------------ */
+  --ew-ease: cubic-bezier(0.2, 0, 0, 1);
+  --ew-dur-fast: 120ms;
+  --ew-dur: 200ms;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+
+body {
+  margin: 0;
+  background: var(--ew-bg);
+  color: var(--ew-text);
+  font-family: var(--ew-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--ew-accent); text-decoration: none; }
+a:hover { color: var(--ew-accent-600); }
+::selection { background: var(--ew-accent-200); }
+
+/* Keyboard focus is themed, never the browser default. */
+*:focus-visible {
+  outline: 2px solid var(--ew-accent);
+  outline-offset: 2px;
+  border-radius: 0;
+}
+
+.num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+
+.rail { scrollbar-width: none; }
+.rail::-webkit-scrollbar { display: none; }
+
+/* Photographs print black and white, per the Modernist imagery rule. */
+.grayscale img,
+img.grayscale { filter: grayscale(1) contrast(1.04); }
+
+/* Anything that animates must respect the OS setting. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Screen-reader-only text, for the labels that must exist but not show. */
+.ew-sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link — first tab stop on every page. */
+.ew-skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--ew-ink);
+  color: #fff;
+  padding: var(--ew-space-3) var(--ew-space-4);
+  font-size: var(--ew-fs-small);
+  font-weight: 700;
+}
+.ew-skip:focus {
+  left: var(--ew-space-4);
+  top: var(--ew-space-4);
+  color: #fff;
+}
+
+/* ============================================================
+   RULES + SURFACES
+   ============================================================ */
+
+.ew-rule { height: var(--ew-rule); background: var(--ew-rule-color); border: 0; margin: 0; }
+.ew-rule-soft { height: 1px; background: var(--ew-neutral-200); border: 0; margin: 0; }
+
+.ew-card {
+  background: var(--ew-bg);
+  border: var(--ew-rule) solid var(--ew-ink);
+  border-radius: var(--ew-radius);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ew-card-body { padding: var(--ew-space-4); display: flex; flex-direction: column; gap: var(--ew-space-2); min-width: 0; }
+.ew-card-kicker { font-size: var(--ew-fs-micro); font-weight: 700; letter-spacing: 0.12em; color: var(--ew-text-muted); text-transform: uppercase; }
+.ew-card-title { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.25; margin: 0; text-wrap: balance; }
+.ew-card-meta { font-size: var(--ew-fs-small); color: var(--ew-text-muted); line-height: 1.5; }
+
+/* ============================================================
+   BUTTONS
+   Modernist sets button labels flush left, never centered.
+   Every control clears the 44px touch target.
+   ============================================================ */
+
+.ew-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--ew-space-2);
+  min-height: 44px;
+  padding: var(--ew-space-3) var(--ew-space-4);
+  border: var(--ew-rule) solid transparent;
+  border-radius: var(--ew-radius);
+  font-family: var(--ew-font);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--ew-dur-fast) var(--ew-ease),
+              color var(--ew-dur-fast) var(--ew-ease),
+              border-color var(--ew-dur-fast) var(--ew-ease);
+}
+
+.ew-btn-primary { background: var(--ew-accent); color: #fff; border-color: var(--ew-accent); }
+.ew-btn-primary:hover { background: var(--ew-accent-600); border-color: var(--ew-accent-600); color: #fff; }
+.ew-btn-primary:active { background: var(--ew-accent-700); border-color: var(--ew-accent-700); }
+
+.ew-btn-ink { background: var(--ew-ink); color: #fff; border-color: var(--ew-ink); }
+.ew-btn-ink:hover { background: var(--ew-neutral-800); border-color: var(--ew-neutral-800); color: #fff; }
+
+.ew-btn-secondary { background: transparent; color: var(--ew-ink); border-color: var(--ew-ink); }
+.ew-btn-secondary:hover { background: var(--ew-accent-100); border-color: var(--ew-accent); color: var(--ew-accent-700); }
+
+.ew-btn-ghost { background: transparent; color: var(--ew-text-muted); border-color: transparent; }
+.ew-btn-ghost:hover { background: var(--ew-neutral-100); color: var(--ew-ink); }
+
+.ew-btn-block { width: 100%; }
+
+.ew-btn[disabled], .ew-btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
+
+/* Icon-only controls still need a reachable target and a real name. */
+.ew-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: var(--ew-rule) solid var(--ew-ink);
+  border-radius: var(--ew-radius);
+  background: var(--ew-bg);
+  color: var(--ew-ink);
+  cursor: pointer;
+}
+.ew-btn-icon:hover { background: var(--ew-accent-100); border-color: var(--ew-accent); color: var(--ew-accent-700); }
+
+/* ============================================================
+   FILTER CHIPS
+   The collection wraps — it is never clipped to one row.
+   Selection is carried by aria-pressed, not by color alone.
+   ============================================================ */
+
+.ew-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ew-space-2);
+  min-width: 0;
+}
+
+.ew-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ew-space-2);
+  min-height: 44px;
+  padding: var(--ew-space-2) var(--ew-space-4);
+  border: var(--ew-rule) solid var(--ew-neutral-300);
+  border-radius: var(--ew-radius);
+  background: var(--ew-bg);
+  color: var(--ew-text-label);
+  font-family: var(--ew-font);
+  font-size: var(--ew-fs-small);
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--ew-dur-fast) var(--ew-ease),
+              border-color var(--ew-dur-fast) var(--ew-ease);
+}
+.ew-chip:hover { border-color: var(--ew-ink); background: var(--ew-neutral-100); }
+
+/* Selected state: filled AND check-marked, so it survives greyscale. */
+.ew-chip[aria-pressed="true"] {
+  background: var(--ew-ink);
+  border-color: var(--ew-ink);
+  color: #fff;
+}
+.ew-chip[aria-pressed="true"]:hover { background: var(--ew-neutral-800); border-color: var(--ew-neutral-800); }
+
+/* The category dot is decorative; the label beside it carries the meaning. */
+.ew-chip-dot {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 auto;
+  display: inline-block;
+}
+
+/* ============================================================
+   TAGS
+   ============================================================ */
+
+.ew-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px var(--ew-space-2);
+  border-radius: var(--ew-radius);
+  font-size: var(--ew-fs-micro);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.ew-tag-free { background: var(--ew-accent-100); color: var(--ew-accent-700); }
+.ew-tag-ink { background: var(--ew-ink); color: #fff; }
+.ew-tag-outline { border: 1px solid var(--ew-neutral-300); color: var(--ew-text-muted); }
+.ew-tag-soon { background: #fdecea; color: #8c1d18; }
+
+/* ============================================================
+   FORMS
+   Every field has a visible label. Placeholders never stand in
+   for one, and errors sit beside the field they belong to.
+   ============================================================ */
+
+.ew-field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+
+.ew-label {
+  font-size: var(--ew-fs-micro);
+  font-weight: 700;
+  color: var(--ew-text-label);
+  letter-spacing: 0.02em;
+}
+
+.ew-input,
+.ew-select,
+.ew-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  border: var(--ew-rule) solid var(--ew-neutral-300);
+  border-radius: var(--ew-radius);
+  background: var(--ew-bg);
+  font-family: var(--ew-font);
+  font-size: var(--ew-fs-body);
+  color: var(--ew-text);
+  padding: var(--ew-space-3) var(--ew-space-4);
+  outline: none;
+  transition: border-color var(--ew-dur-fast) var(--ew-ease);
+}
+.ew-input::placeholder, .ew-textarea::placeholder { color: var(--ew-neutral-500); }
+.ew-input:hover, .ew-select:hover, .ew-textarea:hover { border-color: var(--ew-neutral-400); }
+.ew-input:focus, .ew-select:focus, .ew-textarea:focus { border-color: var(--ew-accent); }
+
+.ew-hint { font-size: var(--ew-fs-micro); color: var(--ew-text-muted); line-height: 1.5; }
+
+.ew-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: var(--ew-fs-micro);
+  font-weight: 600;
+  color: #8c1d18;
+  line-height: 1.5;
+}
+.ew-input[aria-invalid="true"] { border-color: #8c1d18; }
+
+/* Search field: a real label, a real target, not a 150px stub.
+   Note the flex shorthand is deliberately `none`: this sits inside a
+   column-direction .ew-field, where a flex-basis would be read as a
+   HEIGHT and balloon the box. Width comes from the field wrapper. */
+.ew-search {
+  display: flex;
+  align-items: center;
+  gap: var(--ew-space-2);
+  flex: none;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  height: 44px;
+  border: var(--ew-rule) solid var(--ew-ink);
+  border-radius: var(--ew-radius);
+  background: var(--ew-bg);
+  padding: 0 var(--ew-space-3);
+  min-width: 0;
+}
+.ew-search input {
+  flex: 1;
+  min-width: 0;
+  min-height: 40px;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 14px;
+  padding: var(--ew-space-3) 0;
+  outline: none;
+  color: var(--ew-text);
+}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+
+.ew-table { width: 100%; border-collapse: collapse; font-size: var(--ew-fs-small); }
+.ew-table th {
+  text-align: left;
+  font-size: var(--ew-fs-micro);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ew-text-muted);
+  padding: var(--ew-space-3) var(--ew-space-3);
+  border-bottom: var(--ew-rule) solid var(--ew-ink);
+  white-space: nowrap;
+}
+.ew-table td {
+  padding: var(--ew-space-3) var(--ew-space-3);
+  border-bottom: 1px solid var(--ew-neutral-200);
+  vertical-align: middle;
+}
+.ew-table tr:hover td { background: var(--ew-neutral-100); }
+
+/* ============================================================
+   EMPTY STATE
+   An empty screen is an invitation to act, so it always
+   carries the action that fills it.
+   ============================================================ */
+
+.ew-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ew-space-3);
+  padding: var(--ew-space-10) var(--ew-space-6);
+  border: var(--ew-rule) dashed var(--ew-neutral-300);
+  border-radius: var(--ew-radius);
+}
+.ew-empty-title { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; margin: 0; }
+.ew-empty-body { font-size: var(--ew-fs-small); color: var(--ew-text-muted); line-height: 1.55; max-width: 46ch; margin: 0; }
+
+/* ============================================================
+   MAP
+   ============================================================ */
+
+.ew-map-frame {
+  border: var(--ew-rule) solid var(--ew-ink);
+  border-radius: var(--ew-radius);
+  overflow: hidden;
+  min-height: 560px;
+  background: var(--ew-neutral-100);
+}
+
+/* The map element sizes itself from CSS, not from inline styles set in
+   connectedCallback — the design-doc runtime re-renders and drops those,
+   which left Leaflet measuring a 0x0 box and throwing its controls to the
+   page origin. A stylesheet rule survives every re-render. */
+knust-map {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 560px;
+  min-height: 560px;
+}
+
+@media (max-width: 720px) {
+  knust-map { height: 360px; min-height: 360px; }
+}
+
+.ew-venue-list { display: flex; flex-direction: column; gap: 0; }
+.ew-venue {
+  display: flex;
+  align-items: center;
+  gap: var(--ew-space-3);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--ew-space-3);
+  border: 0;
+  border-bottom: 1px solid var(--ew-neutral-200);
+  background: none;
+  font-family: var(--ew-font);
+  font-size: var(--ew-fs-small);
+  color: var(--ew-text);
+  text-align: left;
+  cursor: pointer;
+}
+.ew-venue:hover { background: var(--ew-neutral-100); }
+.ew-venue[aria-current="true"] { background: var(--ew-accent-100); color: var(--ew-accent-700); font-weight: 700; }
+.ew-venue-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; height: 30px;
+  flex: 0 0 auto;
+  border: var(--ew-rule) solid var(--ew-ink);
+  background: var(--ew-ink);
+  color: #fff;
+  font-size: var(--ew-fs-micro);
+  font-weight: 700;
+}
+.ew-venue[aria-current="true"] .ew-venue-num { background: var(--ew-accent); border-color: var(--ew-accent); }
+
+/* ============================================================
+   CAROUSEL DOTS
+   The visible dot stays small; the hit area does not. The arrow
+   buttons remain the primary control, these are the shortcut.
+   ============================================================ */
+
+.ew-dot {
+  position: relative;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+}
+/* An invisible 44px pad centred on the dot, so the target clears
+   the minimum without changing the visual rhythm of the row. */
+.ew-dot::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+}
+
+/* ============================================================
+   RESPONSIVE
+   Mobile-first guards. The page never scrolls sideways, and it
+   gets there by laying out to fit, not by clipping overflow.
+   ============================================================ */
+
+html, body { max-width: 100%; }
+
+/* The header is the one row that genuinely cannot fit a phone in
+   one line, so below 900px it stacks and the nav scrolls on its
+   own axis rather than pushing the page wide. */
+@media (max-width: 900px) {
+  .ew-header-inner {
+    height: auto !important;
+    flex-wrap: wrap;
+    gap: var(--ew-space-3) !important;
+    padding-top: var(--ew-space-3);
+    padding-bottom: var(--ew-space-3);
+  }
+  /* The inline style on the nav sets `flex:1`, which resolves flex-basis
+     to 0% and beats a plain flex-basis here — hence the !important, so the
+     nav actually claims its own row instead of sharing with the CTA. */
+  .ew-header-nav {
+    order: 3;
+    flex: 0 0 100% !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .ew-header-nav::-webkit-scrollbar { display: none; }
+  .ew-header-actions { margin-left: auto; }
+}
+
+/* ============================================================
+   HERO STAT ROW
+   Three columns is right on a laptop and a collision on a phone —
+   the labels ("ORGANIZERS", "PLACES LEFT") are wider than a third
+   of 390px, so the row wraps instead of overlapping.
+   ============================================================ */
+
+.ew-herostats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+}
+
+@media (max-width: 560px) {
+  .ew-herostats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--ew-space-3) 0;
+  }
+  /* the borders that separated columns no longer line up once wrapped */
+  .ew-herostats > * { border-left: 0 !important; padding-left: 0 !important; }
+  .ew-herostats > *:nth-child(2) {
+    border-left: 1px solid rgba(255, 255, 255, 0.16) !important;
+    padding-left: var(--ew-space-4) !important;
+  }
+}
+
+@media (max-width: 720px) {
+  :root { --ew-space-10: 20px; }
+  .ew-btn-block { width: 100%; }
+  .ew-table thead { display: none; }
+  .ew-table tr { display: grid; gap: 4px; padding: var(--ew-space-3) 0; border-bottom: 1px solid var(--ew-neutral-200); }
+  .ew-table td { border: 0; padding: 2px 0; }
+  /* The venue rail sits above the map instead of beside it. */
+  .ew-map-frame { grid-column: auto !important; min-height: 360px; }
+}

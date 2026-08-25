@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EVENTWEB — map marker options</title>
+<link rel="stylesheet" href="eventweb.css">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  body { padding: 40px; background: #fff; }
+  .wrap { max-width: 1400px; margin: 0 auto; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 560px), 1fr)); gap: 40px; }
+  .opt { min-width: 0; }
+  .opt h2 { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 4px; }
+  .opt .lead { font-size: 13.5px; line-height: 1.55; color: #6c717c; margin: 0 0 14px; max-width: 56ch; }
+  .opt .letter { display:inline-block; background:#101215; color:#fff; font-size:12px; font-weight:800;
+                 padding:3px 8px; margin-bottom:10px; letter-spacing:0.1em; }
+  .m { height: 420px; border: 2px solid #101215; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div style="border-bottom:2px solid #101215;padding-bottom:22px;margin-bottom:34px">
+    <div style="font-size:12px;font-weight:800;letter-spacing:0.14em;color:#0e2478">EVENTWEB · VENUE MAP</div>
+    <h1 style="margin:12px 0 0;font-size:44px;line-height:1;font-weight:900;letter-spacing:-0.04em">Four marker treatments</h1>
+    <p style="margin:14px 0 0;font-size:15px;line-height:1.6;color:#4b5160;max-width:70ch">
+      All four keep the Modernist rules — flat fills, zero radius, 2px rules, no gradients or drop shadows —
+      and none of them rely on colour alone: every marker carries a number or a label, and every one has a
+      text alternative for screen readers. Pin 4 (Prempeh II Library) has nothing booked, so each option also
+      shows how it handles an empty venue.
+    </p>
+  </div>
+
+  <div class="grid">
+    <div class="opt">
+      <span class="letter">OPTION A</span>
+      <h2>Poster chip</h2>
+      <p class="lead">The marker is the event's own flyer, cropped to the same 2:3 as the board cards and printed
+        grayscale per the imagery rule. Selecting one brings it to full colour. This is the map saying the same
+        thing the hero says — every poster on campus, in one place.</p>
+      <div class="m" id="mA"></div>
+    </div>
+
+    <div class="opt">
+      <span class="letter">OPTION B</span>
+      <h2>Drafting callout</h2>
+      <p class="lead">An architect's leader line: a 2px stem pinned to the exact coordinate, carrying a flat label
+        with the venue number and a category colour bar. The most purely Modernist of the four, and the only one
+        that names the venue directly on the map.</p>
+      <div class="m" id="mB"></div>
+    </div>
+
+    <div class="opt">
+      <span class="letter">OPTION C</span>
+      <h2>Capacity block</h2>
+      <p class="lead">The square fills from the bottom in proportion to how full that venue's event is, so the map
+        answers "where can I still get in?" at a glance. Empty venues read as a hollow outline.</p>
+      <div class="m" id="mC"></div>
+    </div>
+
+    <div class="opt">
+      <span class="letter">CURRENT</span>
+      <h2>Numbered square</h2>
+      <p class="lead">What is on the map today — a flat ink square with the venue number, turning blue when selected.
+        Correct and quiet, but it carries no information beyond position.</p>
+      <div class="m" id="mD"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CAT = { Academic:'#1a3ee8', Social:'#b3261e', Sports:'#0b6b3a', Religious:'#6b3fa0', Business:'#8a5a00' };
+
+const VENUES = [
+  { n:1, name:'Great Hall',                        lat:6.67310, lng:-1.57130, cat:'Academic',  poster:'assets/aurelion.png',        reg:512, cap:700 },
+  { n:2, name:'Paa Joe Stadium',                   lat:6.67960, lng:-1.57230, cat:'Sports',    poster:'assets/bicycle-race.png',    reg:188, cap:300 },
+  { n:3, name:'College of Science Auditorium',     lat:6.67580, lng:-1.56850, cat:'Sports',    poster:'assets/miles-mindset.png',   reg:96,  cap:250 },
+  { n:4, name:'Prempeh II Library',                lat:6.67450, lng:-1.57010, cat:null,        poster:null,                          reg:0,   cap:0   },
+  { n:5, name:'KNUST Interdenominational Church',  lat:6.68080, lng:-1.57390, cat:'Religious', poster:'assets/school-of-prayer.png', reg:402, cap:900 },
+  { n:6, name:'KNUST Campus',                      lat:6.67160, lng:-1.57450, cat:'Business',  poster:'assets/nkabom-collaborative.png', reg:184, cap:250 }
+];
+
+const F = "font-family:'Archivo',sans-serif;";
+
+/* ---------- A. poster chip ------------------------------------------ */
+function iconA(v, on) {
+  const w = on ? 44 : 34, h = Math.round(w * 1.45);
+  const inner = v.poster
+    ? '<span style="position:absolute;inset:0;background-image:url(' + v.poster + ');background-size:cover;' +
+      'background-position:center;filter:grayscale(' + (on ? 0 : 1) + ') contrast(1.05)"></span>'
+    : '<span style="position:absolute;inset:0;background:#fff"></span>';
+  const badge = '<span style="position:absolute;left:0;bottom:0;background:' + (v.cat ? CAT[v.cat] : '#101215') +
+    ';color:#fff;font-size:10px;font-weight:800;line-height:1;padding:2px 4px;' + F + '">' + v.n + '</span>';
+  return L.divIcon({ className:'', iconSize:[w,h], iconAnchor:[w/2,h/2], html:
+    '<span style="position:relative;display:block;width:' + w + 'px;height:' + h + 'px;' +
+    'border:2px ' + (v.poster ? 'solid' : 'dashed') + ' #101215;background:#fff">' + inner + badge + '</span>' });
+}
+
+/* ---------- B. drafting callout ------------------------------------- */
+function iconB(v, on) {
+  const label = v.name.replace('KNUST ', '');
+  const bar = v.cat ? CAT[v.cat] : '#9aa0aa';
+  return L.divIcon({ className:'', iconSize:[0,0], iconAnchor:[0,0], html:
+    '<span style="position:absolute;left:0;bottom:0;display:block">' +
+      '<span style="position:absolute;left:0;bottom:0;width:2px;height:26px;background:#101215"></span>' +
+      '<span style="position:absolute;left:0;bottom:26px;display:flex;align-items:stretch;' +
+        'border:2px solid #101215;background:' + (on ? '#101215' : '#fff') + ';white-space:nowrap">' +
+        '<span style="width:5px;background:' + bar + '"></span>' +
+        '<span style="' + F + 'font-size:11px;font-weight:800;padding:3px 6px;color:' + (on ? '#fff' : '#101215') + '">' +
+          v.n + '</span>' +
+        '<span style="' + F + 'font-size:11px;font-weight:600;padding:3px 7px 3px 0;color:' +
+          (on ? '#fff' : '#4b5160') + '">' + label + '</span>' +
+      '</span>' +
+    '</span>' });
+}
+
+/* ---------- C. capacity block --------------------------------------- */
+function iconC(v, on) {
+  const s = on ? 40 : 32;
+  const pct = v.cap ? Math.round((v.reg / v.cap) * 100) : 0;
+  const fill = v.cat ? CAT[v.cat] : '#101215';
+  const body = v.cap
+    ? '<span style="position:absolute;left:0;right:0;bottom:0;height:' + pct + '%;background:' + fill + '"></span>'
+    : '';
+  return L.divIcon({ className:'', iconSize:[s,s], iconAnchor:[s/2,s/2], html:
+    '<span style="position:relative;display:flex;align-items:center;justify-content:center;width:' + s + 'px;height:' + s + 'px;' +
+      'border:2px ' + (v.cap ? 'solid' : 'dashed') + ' #101215;background:#fff;overflow:hidden">' + body +
+      '<span style="position:relative;' + F + 'font-size:12px;font-weight:800;color:' +
+        (pct > 55 ? '#fff' : '#101215') + '">' + v.n + '</span>' +
+    '</span>' });
+}
+
+/* ---------- D. current ---------------------------------------------- */
+function iconD(v, on) {
+  return L.divIcon({ className:'', iconSize:[30,30], iconAnchor:[15,15], html:
+    '<div style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;' + F +
+    'font-size:13px;font-weight:600;color:#fff;border:2px solid #201e1d;background:' +
+    (on ? '#1a3ee8' : '#201e1d') + '">' + v.n + '</div>' });
+}
+
+function build(id, iconFn, selected) {
+  const map = L.map(id, { center:[6.6762,-1.5715], zoom:15, scrollWheelZoom:false, zoomControl:true });
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    { attribution:'© OpenStreetMap contributors', maxZoom:19 }).addTo(map);
+  VENUES.forEach(v => {
+    const on = v.n === selected;
+    L.marker([v.lat, v.lng], {
+      icon: iconFn(v, on),
+      title: v.name,
+      alt: v.name + (v.cat ? ' — ' + v.cat + ' event' : ' — nothing booked yet')
+    }).addTo(map);
+  });
+  setTimeout(() => map.invalidateSize(), 200);
+}
+
+build('mA', iconA, 2);
+build('mB', iconB, 2);
+build('mC', iconC, 2);
+build('mD', iconD, 2);
+</script>
+</body>
+</html>

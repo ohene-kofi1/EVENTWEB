@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/modernist-0a5f2df1-db5d-4f09-bd89-0a1c92afb4f2/styles.css">
+<link rel="stylesheet" href="eventweb.css">
+<script src="_ds/modernist-0a5f2df1-db5d-4f09-bd89-0a1c92afb4f2/_ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:var(--ew-bg); color:var(--ew-text); font-family:'Archivo',sans-serif; -webkit-font-smoothing:antialiased; }
+  a { color:var(--ew-accent); text-decoration:none; }
+  a:hover { color:var(--ew-accent-600); }
+  ::selection { background:var(--ew-accent-200); }
+  *:focus-visible { outline:2px solid var(--ew-accent); outline-offset:2px; }
+  .num { font-variant-numeric:tabular-nums; }
+</style>
+</helmet>
+
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#1a3ee8"></rect><rect x="120" y="130" width="180" height="30" fill="#ffffff"></rect><rect x="120" y="185" width="120" height="30" fill="#ffffff"></rect><rect x="120" y="240" width="180" height="30" fill="#ffffff"></rect></svg></template>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));min-height:100vh">
+
+  <div style="background:#0c0e12;color:var(--ew-bg);padding:40px;display:flex;flex-direction:column;gap:38px;overflow:hidden">
+    <a href="EVENTWEB Events.dc.html" style="display:flex;align-items:center;gap:10px;color:var(--ew-bg)">
+      <svg width="23" height="23" viewBox="0 0 132 132" aria-label="EVENTWEB"><rect width="132" height="132" fill="#1a3ee8"></rect><rect x="26" y="30" width="80" height="14" fill="#ffffff"></rect><rect x="26" y="59" width="54" height="14" fill="#ffffff"></rect><rect x="26" y="88" width="80" height="14" fill="#ffffff"></rect></svg>
+      <span style="font-weight:800;font-size:19px;letter-spacing:-0.03em">EVENTWEB</span>
+    </a>
+
+    <div>
+      <h1 style="margin:0;font-size:clamp(34px,4.4vw,52px);line-height:0.95;font-weight:900;letter-spacing:-0.04em;max-width:20ch">Put your poster in front of the whole campus.</h1>
+      <p style="margin:20px 0 0;font-size:16px;line-height:1.6;color:var(--ew-text-muted-on-dark);max-width:46ch;text-wrap:pretty">Societies on EVENTWEB publish the flyer once, and every student on campus can find it, register and get a reminder before doors open.</p>
+    </div>
+
+    <div style="display:flex;gap:14px">
+      <sc-for list="{{ strip }}" as="p" hint-placeholder-count="4">
+        <span style="{{ p.style }}"></span>
+      </sc-for>
+    </div>
+
+    <div style="display:grid;gap:1px;background:#242832;border-radius:0;overflow:hidden;margin-top:auto">
+      <sc-for list="{{ proof }}" as="pr" hint-placeholder-count="3">
+        <div style="background:#141721;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+          <span style="font-size:13.5px;color:var(--ew-text-muted-on-dark)">{{ pr.label }}</span>
+          <span class="num" style="font-size:18px;font-weight:800;letter-spacing:-0.02em">{{ pr.value }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="font-size:13px;color:var(--ew-text-muted-on-dark)">Trusted by Mic &amp; Madness · ATLAS · SCC · ECESA × CSS</div>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:center;padding:40px">
+    <div style="width:100%;max-width:420px">
+
+      <div style="display:flex;gap:0;border:1px solid var(--ew-neutral-200);border-radius:0;padding:4px;background:var(--ew-neutral-100)">
+        <sc-for list="{{ roles }}" as="r" hint-placeholder-count="2">
+          <button onClick="{{ r.go }}" style="{{ r.style }}">{{ r.label }}</button>
+        </sc-for>
+      </div>
+
+      <h2 style="margin:30px 0 0;font-size:30px;line-height:1.1;font-weight:800;letter-spacing:-0.03em">{{ heading }}</h2>
+      <p style="margin:10px 0 0;font-size:14.5px;line-height:1.55;color:var(--ew-text-muted)">{{ subheading }}</p>
+
+      <div style="display:flex;flex-direction:column;gap:16px;margin-top:28px">
+
+        <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+          <label style="display:block">
+            <span style="display:block;font-size:12.5px;font-weight:700;color:var(--ew-text-label);margin-bottom:7px">{{ nameLabel }}</span>
+            <input value="{{ f.org }}" onChange="{{ onOrg }}" placeholder="{{ namePlaceholder }}" style="width:100%;box-sizing:border-box;border:1px solid var(--ew-neutral-300);border-radius:0;background:var(--ew-bg);font-family:inherit;font-size:15px;padding:13px 14px;outline:none;color:var(--ew-text)">
+          </label>
+        </sc-if>
+
+        <label style="display:block">
+          <span style="display:block;font-size:12.5px;font-weight:700;color:var(--ew-text-label);margin-bottom:7px">{{ emailLabel }}</span>
+          <input value="{{ f.email }}" onChange="{{ onEmail }}" placeholder="{{ emailPlaceholder }}" style="width:100%;box-sizing:border-box;border:1px solid var(--ew-neutral-300);border-radius:0;background:var(--ew-bg);font-family:inherit;font-size:15px;padding:13px 14px;outline:none;color:var(--ew-text)">
+        </label>
+
+        <label style="display:block">
+          <span style="display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;font-weight:700;color:var(--ew-text-label);margin-bottom:7px">
+            <span>Password</span>
+            <a href="#reset" style="font-size:12.5px;font-weight:600">Forgot?</a>
+          </span>
+          <span style="display:flex;align-items:center;border:1px solid var(--ew-neutral-300);border-radius:0;background:var(--ew-bg);padding-right:6px">
+            <input type="{{ pwType }}" value="{{ f.pw }}" onChange="{{ onPw }}" placeholder="At least 8 characters" style="flex:1;min-width:0;border:none;background:none;font-family:inherit;font-size:15px;padding:13px 14px;outline:none;color:var(--ew-text)">
+            <button onClick="{{ togglePw }}" style="border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--ew-text-muted);cursor:pointer;padding:8px 10px">{{ pwToggle }}</button>
+          </span>
+        </label>
+
+        <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <span style="display:block;font-size:12.5px;font-weight:700;color:var(--ew-text-label);margin-bottom:10px">What do you run?</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ kinds }}" as="k" hint-placeholder-count="4">
+                <button onClick="{{ k.go }}" style="{{ k.style }}">{{ k.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <button onClick="{{ toggleRemember }}" style="display:flex;align-items:center;gap:10px;border:none;background:none;font-family:inherit;padding:2px 0;cursor:pointer;text-align:left">
+          <span style="{{ boxStyle }}">
+            <sc-if value="{{ remember }}" hint-placeholder-val="{{ true }}">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--ew-bg)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13l6 6L20 6"></path></svg>
+            </sc-if>
+          </span>
+          <span style="font-size:13.5px;color:var(--ew-text-label)">Keep me signed in on this device</span>
+        </button>
+
+        <button onClick="{{ submit }}" style="{{ submitStyle }}">{{ submitLabel }}</button>
+
+        <sc-if value="{{ notice }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--ew-accent-100);border:1px solid #d6ddff;border-radius:0;padding:14px 16px;font-size:13.5px;line-height:1.55;color:var(--ew-accent-600)">{{ noticeText }}</div>
+        </sc-if>
+
+        <div style="display:flex;align-items:center;gap:14px;margin:4px 0">
+          <span style="flex:1;height:1px;background:var(--ew-neutral-200)"></span>
+          <span style="font-size:12px;font-weight:600;color:var(--ew-text-muted)">OR</span>
+          <span style="flex:1;height:1px;background:var(--ew-neutral-200)"></span>
+        </div>
+
+        <button style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:1px solid var(--ew-neutral-300);border-radius:0;background:var(--ew-bg);font-family:inherit;font-size:14.5px;font-weight:600;padding:14px;cursor:pointer;color:var(--ew-text)" style-hover="background:var(--ew-neutral-100)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--ew-accent)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 8l9 6 9-6"></path></svg>
+          Continue with KNUST student mail
+        </button>
+
+        <div style="font-size:13.5px;color:var(--ew-text-muted);text-align:center;margin-top:6px">
+          {{ switchPrompt }} <a href="#switch" onClick="{{ toggleMode }}" style="font-weight:600">{{ switchAction }}</a>
+        </div>
+      </div>
+
+      <div style="margin-top:30px;padding-top:22px;border-top:1px solid var(--ew-neutral-200);font-size:12.5px;line-height:1.6;color:var(--ew-text-muted)">
+        Organizer accounts are reviewed once before the first event goes live. <a href="EVENTWEB Events.dc.html">Back to what's on</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a3ee8&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#1a3ee8&quot;,&quot;#0b62d6&quot;,&quot;#1d4ed8&quot;,&quot;#153fb0&quot;]}}">
+class Component extends DCLogic {
+  state = {
+    role: 'Organizer', mode: 'signin', showPw: false, remember: true, kind: 'Society',
+    submitted: false, form: { org: '', email: '', pw: '' }
+  };
+
+  patch(k, v) { this.setState(s => ({ form: { ...s.form, [k]: v }, submitted: false })); }
+
+  renderVals() {
+    const accent = this.props.accent ?? '#1a3ee8';
+    const st = this.state;
+    const isOrg = st.role === 'Organizer';
+    const isSignup = st.mode === 'signup';
+
+    const roles = ['Organizer', 'Student'].map(label => {
+      const on = st.role === label;
+      return {
+        label,
+        go: () => this.setState({ role: label, submitted: false }),
+        style: 'flex:1;border:none;border-radius:0;background:' + (on ? '#fff' : 'transparent') +
+          ';color:' + (on ? 'var(--ew-text)' : 'var(--ew-text-muted)') + ';font-family:inherit;font-size:14px;font-weight:' +
+          (on ? '700' : '500') + ';padding:11px 12px;cursor:pointer;box-shadow:' +
+          (on ? '0 1px 3px rgba(16,18,21,0.12)' : 'none')
+      };
+    });
+
+    const kinds = ['Society', 'Hall', 'Faculty board', 'Brand / promoter'].map(label => {
+      const on = st.kind === label;
+      return {
+        label,
+        go: () => this.setState({ kind: label }),
+        style: 'border:1px solid ' + (on ? accent : '#e0e2e8') + ';border-radius:0;background:' +
+          (on ? accent : '#fff') + ';color:' + (on ? '#fff' : '#4b5160') +
+          ';font-family:inherit;font-size:13px;font-weight:600;padding:8px 14px;cursor:pointer'
+      };
+    });
+
+    const strip = [
+      'assets/madhouse.png', 'assets/aurelion.png', 'assets/kickoff-fusion.png', 'assets/bicycle-race.png'
+    ].map((src, i) => ({
+      style: 'flex:1;min-width:0;aspect-ratio:2/3;border-radius:0;display:block;background-image:url(' + src +
+        ');background-size:cover;background-position:center;' +
+        'transform:rotate(' + (i % 2 ? 1.6 : -1.6) + 'deg);box-shadow:0 16px 40px rgba(0,0,0,0.45)'
+    }));
+
+    const proof = [
+      { label: 'Registrations this semester', value: '3,412' },
+      { label: 'Average time to publish', value: '4 min' },
+      { label: 'Societies publishing', value: '24' }
+    ];
+
+    const ready = st.form.email.includes('@') && st.form.pw.length >= 8 && (!isSignup || st.form.org.trim().length > 1);
+
+    const heading = isSignup
+      ? (isOrg ? 'Create an organizer account' : 'Create your student account')
+      : (isOrg ? 'Sign in to your console' : 'Sign in to your registrations');
+
+    const subheading = isSignup
+      ? (isOrg ? 'Tell us who is running the events and we will verify the account once.' : 'Register once, then keep every event you have signed up for in one place.')
+      : (isOrg ? 'Publish posters, edit an event, and see who has registered.' : 'Your registrations and reminders are waiting.');
+
+    return {
+      roles, kinds, strip, proof,
+      isSignup, remember: st.remember,
+      f: st.form,
+      heading, subheading,
+      nameLabel: isOrg ? 'Organization name' : 'Full name',
+      namePlaceholder: isOrg ? 'e.g. Mic & Madness' : 'e.g. Ama Boateng',
+      emailLabel: isOrg ? 'Work email' : 'Student email',
+      emailPlaceholder: isOrg ? 'events@yoursociety.org' : 'index@st.knust.edu.gh',
+      onOrg: e => this.patch('org', e.target.value),
+      onEmail: e => this.patch('email', e.target.value),
+      onPw: e => this.patch('pw', e.target.value),
+      pwType: st.showPw ? 'text' : 'password',
+      pwToggle: st.showPw ? 'HIDE' : 'SHOW',
+      togglePw: () => this.setState(s => ({ showPw: !s.showPw })),
+      toggleRemember: () => this.setState(s => ({ remember: !s.remember })),
+      boxStyle: 'width:17px;height:17px;flex-shrink:0;border-radius:0;display:flex;align-items:center;justify-content:center;border:1.5px solid ' +
+        (st.remember ? accent : '#c9cdd6') + ';background:' + (st.remember ? accent : '#fff'),
+      submitLabel: isSignup
+        ? (isOrg ? 'Create organizer account' : 'Create account')
+        : (isOrg ? 'Sign in to console' : 'Sign in'),
+      submitStyle: 'width:100%;border:none;border-radius:0;background:' + (ready ? accent : '#c9cdd6') +
+        ';color:var(--ew-bg);font-family:inherit;font-size:15px;font-weight:700;padding:15px;cursor:' +
+        (ready ? 'pointer' : 'default') + ';margin-top:4px',
+      submit: () => { if (ready) this.setState({ submitted: true }); },
+      notice: st.submitted,
+      noticeText: isOrg
+        ? (isSignup
+          ? 'Account created. We will confirm ' + st.kind.toLowerCase() + ' details by email, then your console opens for publishing.'
+          : 'Signed in. Opening the organizer console — publish a poster, set free or paid tiers, and track registrations.')
+        : (isSignup ? 'Account created. Your registrations will appear under My registrations.' : 'Signed in. Your registrations are under My registrations.'),
+      switchPrompt: isSignup ? 'Already have an account?' : "Don't have an account yet?",
+      switchAction: isSignup ? 'Sign in' : (isOrg ? 'Apply as an organizer' : 'Create one'),
+      toggleMode: e => { e.preventDefault(); this.setState(s => ({ mode: s.mode === 'signup' ? 'signin' : 'signup', submitted: false })); }
+    };
+  }
+}
+</script>
+</body>
+</html>

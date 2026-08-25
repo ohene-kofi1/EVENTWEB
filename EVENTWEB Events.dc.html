@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/modernist-0a5f2df1-db5d-4f09-bd89-0a1c92afb4f2/styles.css">
+<link rel="stylesheet" href="eventweb.css">
+<script src="_ds/modernist-0a5f2df1-db5d-4f09-bd89-0a1c92afb4f2/_ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="./knust-map.js"></script>
+</helmet>
+
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#1a3ee8"></rect><rect x="120" y="130" width="180" height="30" fill="#ffffff"></rect><rect x="120" y="185" width="120" height="30" fill="#ffffff"></rect><rect x="120" y="240" width="180" height="30" fill="#ffffff"></rect></svg></template>
+
+<div style="min-height:100vh;background:var(--ew-bg)">
+
+  <a class="ew-skip" href="#board">Skip to the board</a>
+
+  <div style="position:sticky;top:0;z-index:40;background:var(--ew-bg);border-bottom:var(--ew-rule) solid var(--ew-ink)">
+    <div class="ew-header-inner" style="max-width:1340px;margin:0 auto;padding:0 var(--ew-space-10);display:flex;align-items:center;gap:var(--ew-space-8);height:66px">
+      <a href="EVENTWEB Events.dc.html" style="display:flex;align-items:center;gap:10px;flex-shrink:0;color:var(--ew-ink)">
+        <svg width="23" height="23" viewBox="0 0 132 132" role="img" aria-label="EVENTWEB home"><rect width="132" height="132" fill="#1a3ee8"></rect><rect x="26" y="30" width="80" height="14" fill="#ffffff"></rect><rect x="26" y="59" width="54" height="14" fill="#ffffff"></rect><rect x="26" y="88" width="80" height="14" fill="#ffffff"></rect></svg>
+        <span style="font-weight:800;font-size:19px;letter-spacing:-0.03em">EVENTWEB</span>
+      </a>
+      <nav class="ew-header-nav" aria-label="Main" style="display:flex;align-items:center;gap:var(--ew-space-6);flex:1;min-width:0;font-size:14px;white-space:nowrap">
+        <a href="#board" style="color:var(--ew-ink);font-weight:700;display:flex;align-items:center;min-height:44px">What's on</a>
+        <a href="#venues" style="color:var(--ew-text-muted);font-weight:600;display:flex;align-items:center;min-height:44px">Venues</a>
+        <a href="#registrations" style="color:var(--ew-text-muted);font-weight:600;display:flex;align-items:center;min-height:44px">My registrations</a>
+      </nav>
+      <div class="ew-header-actions" style="display:flex;align-items:center;gap:var(--ew-space-3);flex-shrink:0">
+        <a href="EVENTWEB Login.dc.html" style="font-size:14px;font-weight:600;color:var(--ew-text-muted);white-space:nowrap;display:flex;align-items:center;min-height:44px">Organizer sign in</a>
+        <a href="EVENTWEB Organizer.dc.html" class="ew-btn ew-btn-ink" style="white-space:nowrap">List an event</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:1340px;margin:0 auto;padding:0 var(--ew-space-10)">
+
+    <div style="position:relative;margin:var(--ew-space-6) 0 0;background:#08090c;overflow:hidden;color:#fff;border:var(--ew-rule) solid var(--ew-ink)">
+
+      <div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:var(--ew-space-6);padding:var(--ew-space-10) 44px">
+        <div style="min-width:0;display:flex;flex-direction:column;justify-content:center;padding-bottom:var(--ew-space-4)">
+          <div style="display:flex;align-items:center;gap:10px;font-size:var(--ew-fs-micro);font-weight:700;letter-spacing:0.18em;color:#9db0ff">
+            <img src="assets/knust-logo.png" alt="KNUST Crest" style="height:20px;width:auto;display:inline-block;flex-shrink:0;vertical-align:middle">
+            <span>KNUST · KUMASI · SEASON 2026</span>
+          </div>
+          <h1 style="margin:22px 0 0;font-family:var(--ew-font-grotesque);font-size:clamp(52px,6.8vw,96px);line-height:0.86;font-weight:900;letter-spacing:-0.03em">Every poster<br>on campus,<br><span style="color:#9db0ff">one board.</span></h1>
+          <p style="margin:22px 0 0;font-size:16.5px;line-height:1.6;max-width:42ch;color:var(--ew-text-muted-on-dark);text-wrap:pretty">Societies publish the flyer once. You browse by category, register in a tap, and get a reminder before doors open.</p>
+        </div>
+
+        <div style="min-width:0;display:flex;flex-direction:column;justify-content:flex-end">
+          <div onPointerDown="{{ dragStart }}" onPointerMove="{{ dragMove }}" onPointerUp="{{ dragEnd }}" onPointerCancel="{{ dragEnd }}" style="{{ deckStyle }}">
+            <sc-for list="{{ deck }}" as="d" hint-placeholder-count="0">
+              <button onClick="{{ d.click }}" aria-label="{{ d.alt }}" style="{{ d.style }}"></button>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:9px;margin:0 0 18px;font-size:var(--ew-fs-micro);font-weight:600;letter-spacing:0.08em;color:var(--ew-text-muted-on-dark)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 12H3"></path><path d="M6 9l-3 3 3 3"></path><path d="M16 12h5"></path><path d="M18 9l3 3-3 3"></path></svg>
+            DRAG THE POSTER, OR USE THE ARROW BUTTONS BELOW
+          </div>
+        </div>
+      </div>
+
+      <div style="position:relative;border-top:1px solid rgba(255,255,255,0.16);background:rgba(255,255,255,0.03)">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:var(--ew-space-6);align-items:center;padding:22px 44px">
+          <div style="min-width:0">
+            <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap">
+              <span style="font-size:var(--ew-fs-micro);font-weight:800;letter-spacing:0.14em;background:var(--ew-accent);padding:5px 10px">ON THE BOARD</span>
+              <span style="font-size:var(--ew-fs-micro);font-weight:700;letter-spacing:0.12em;color:var(--ew-text-muted-on-dark)">{{ active.organizer }}</span>
+            </div>
+            <h2 aria-live="polite" style="margin:14px 0 0;font-size:clamp(22px,2.2vw,30px);line-height:1.08;font-weight:800;letter-spacing:-0.03em;text-wrap:pretty">{{ active.title }}</h2>
+            <div class="num" style="font-size:var(--ew-fs-small);color:var(--ew-text-muted-on-dark);margin-top:10px">{{ active.line }}</div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap;justify-content:flex-end">
+            <div style="min-width:0">
+              <div style="font-size:var(--ew-fs-micro);font-weight:700;letter-spacing:0.14em;color:var(--ew-text-muted-on-dark)">CATEGORY</div>
+              <div style="font-size:22px;font-weight:800;letter-spacing:-0.03em;margin-top:4px">{{ active.cat }}</div>
+            </div>
+            <div style="width:1px;height:44px;background:rgba(255,255,255,0.18)"></div>
+            <div style="min-width:0">
+              <div style="font-size:var(--ew-fs-micro);font-weight:700;letter-spacing:0.14em;color:var(--ew-text-muted-on-dark)">PLACES LEFT</div>
+              <div class="num" style="font-size:26px;font-weight:800;letter-spacing:-0.03em;margin-top:4px">{{ active.left }}</div>
+            </div>
+            <button onClick="{{ active.open }}" class="ew-btn ew-btn-primary" style="white-space:nowrap">{{ active.cta }}</button>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--ew-space-6);padding:0 44px 22px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:10px">
+            <button onClick="{{ prev }}" aria-label="Previous poster" style="width:44px;height:44px;border:var(--ew-rule) solid rgba(255,255,255,0.3);background:transparent;color:#fff;font-family:inherit;font-size:15px;cursor:pointer" style-hover="background:rgba(255,255,255,0.12)">←</button>
+            <button onClick="{{ next }}" aria-label="Next poster" style="width:44px;height:44px;border:var(--ew-rule) solid rgba(255,255,255,0.3);background:transparent;color:#fff;font-family:inherit;font-size:15px;cursor:pointer" style-hover="background:rgba(255,255,255,0.12)">→</button>
+            <span class="num" style="font-size:var(--ew-fs-micro);font-weight:600;letter-spacing:0.1em;color:var(--ew-text-muted-on-dark);margin-left:6px">{{ counter }}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px">
+            <sc-for list="{{ dots }}" as="dt" hint-placeholder-count="0">
+              <button onClick="{{ dt.go }}" class="ew-dot" aria-label="{{ dt.alt }}" style="{{ dt.style }}"></button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:var(--ew-space-6);margin:56px 0 18px;flex-wrap:wrap">
+      <h2 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-0.03em">Filling up</h2>
+      <span style="font-size:var(--ew-fs-small);color:var(--ew-text-muted)">Sorted by places remaining</span>
+    </div>
+    <div class="rail" style="display:flex;gap:var(--ew-space-3);overflow-x:auto;padding-bottom:6px">
+      <sc-for list="{{ closing }}" as="c" hint-placeholder-count="0">
+        <button onClick="{{ c.open }}" style="display:flex;align-items:center;gap:var(--ew-space-3);flex:0 0 auto;width:300px;border:var(--ew-rule) solid var(--ew-neutral-300);background:var(--ew-bg);padding:var(--ew-space-3);text-align:left;cursor:pointer;font-family:inherit" style-hover="border-color:#1a3ee8;background:#eef1ff">
+          <span style="{{ c.posterStyle }}"></span>
+          <span style="min-width:0;flex:1">
+            <span style="display:block;font-size:14.5px;font-weight:700;letter-spacing:-0.015em;line-height:1.25">{{ c.title }}</span>
+            <span class="num" style="display:block;font-size:var(--ew-fs-micro);color:var(--ew-text-muted);margin-top:5px">{{ c.when }}</span>
+            <span style="display:block;height:6px;background:var(--ew-neutral-200);margin-top:9px;overflow:hidden"><span style="{{ c.barStyle }}"></span></span>
+            <span class="num" style="display:block;font-size:var(--ew-fs-micro);font-weight:700;color:{{ c.leftColor }};margin-top:6px">{{ c.left }}</span>
+          </span>
+        </button>
+      </sc-for>
+    </div>
+
+    <div id="board" style="display:flex;align-items:flex-end;justify-content:space-between;gap:var(--ew-space-6);margin:60px 0 20px;flex-wrap:wrap">
+      <h2 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-0.03em">The board</h2>
+      <div style="display:flex;align-items:flex-end;gap:var(--ew-space-3);flex-wrap:wrap;flex:1 1 420px;justify-content:flex-end">
+        <div class="ew-field" style="flex:1 1 260px;max-width:380px;min-width:220px">
+          <label class="ew-label" for="ew-q">Search events</label>
+          <div class="ew-search">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex-shrink:0;color:var(--ew-text-muted)"><circle cx="11" cy="11" r="7"></circle><path d="M16.5 16.5L21 21"></path></svg>
+            <input id="ew-q" value="{{ query }}" onChange="{{ onQuery }}" placeholder="Title, society or venue">
+          </div>
+        </div>
+        <div class="ew-field" style="flex:0 1 200px">
+          <label class="ew-label" for="ew-sort">Sort by</label>
+          <select id="ew-sort" class="ew-select" value="{{ sort }}" onChange="{{ onSort }}">
+            <option value="soonest">Soonest first</option>
+            <option value="popular">Most registered</option>
+            <option value="space">Most places left</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding-bottom:var(--ew-space-6);border-bottom:var(--ew-rule) solid var(--ew-ink)">
+      <fieldset style="border:0;padding:0;margin:0;min-width:0">
+        <legend class="ew-label" style="padding:0 0 10px">Filter by category</legend>
+        <div class="ew-chips">
+          <sc-for list="{{ chips }}" as="ch" hint-placeholder-count="6">
+            <button onClick="{{ ch.go }}" class="ew-chip" aria-pressed="{{ ch.on }}">
+              <span class="ew-chip-dot" style="{{ ch.dotStyle }}" aria-hidden="true"></span>{{ ch.label }}
+            </button>
+          </sc-for>
+        </div>
+      </fieldset>
+    </div>
+
+    <div aria-live="polite" style="font-size:var(--ew-fs-small);color:var(--ew-text-muted);padding:var(--ew-space-4) 0 0">{{ resultCount }}</div>
+
+    <sc-if value="{{ hasResults }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,258px),1fr));gap:30px var(--ew-space-6);padding:var(--ew-space-6) 0 10px">
+        <sc-for list="{{ events }}" as="ev" hint-placeholder-count="6">
+          <div style="display:flex;flex-direction:column;min-width:0">
+            <button onClick="{{ ev.open }}" style="position:relative;border:var(--ew-rule) solid var(--ew-ink);padding:0;background:var(--ew-neutral-100);overflow:hidden;cursor:pointer;display:block;aspect-ratio:2/3" style-hover="box-shadow:0 12px 32px rgba(16,18,21,0.22)">
+              <span role="img" aria-label="{{ ev.alt }}" style="{{ ev.posterStyle }}">{{ ev.posterFallback }}</span>
+              <span style="{{ ev.catStyle }}">{{ ev.cat }}</span>
+              <span style="position:absolute;left:0;right:0;bottom:0;padding:34px var(--ew-space-3) var(--ew-space-3);background:linear-gradient(to top,rgba(8,9,12,0.9),transparent);display:flex;align-items:flex-end;justify-content:space-between;gap:var(--ew-space-2)">
+                <span class="num" style="font-size:var(--ew-fs-micro);font-weight:700;letter-spacing:0.1em;color:#fff;text-align:left">{{ ev.stamp }}</span>
+                <span style="{{ ev.leftStyle }}">{{ ev.leftShort }}</span>
+              </span>
+            </button>
+            <div style="padding:14px 2px 0;min-width:0">
+              <div style="font-size:var(--ew-fs-micro);font-weight:700;letter-spacing:0.12em;color:var(--ew-accent-700)">{{ ev.organizer }}</div>
+              <h3 style="margin:9px 0 0;font-size:17px;line-height:1.22;font-weight:700;letter-spacing:-0.02em;text-wrap:pretty">{{ ev.title }}</h3>
+              <div class="num" style="font-size:var(--ew-fs-small);color:var(--ew-text-muted);margin-top:8px">{{ ev.when }}</div>
+              <div style="font-size:var(--ew-fs-small);color:var(--ew-text-muted);margin-top:3px">{{ ev.venue }}</div>
+              <div style="display:flex;align-items:center;gap:var(--ew-space-2);margin-top:14px">
+                <button onClick="{{ ev.open }}" class="ew-btn ew-btn-ink" style="flex:1;justify-content:flex-start;white-space:nowrap">{{ ev.cta }}</button>
+                <button onClick="{{ ev.toggleRemind }}" class="ew-btn-icon" aria-label="{{ ev.remindLabel }}" aria-pressed="{{ ev.reminded }}" style="{{ ev.remindStyle }}">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="{{ ev.bellFill }}" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+      <div class="ew-empty" style="margin:var(--ew-space-8) 0">
+        <div style="font-size:var(--ew-fs-micro);font-weight:700;letter-spacing:0.14em;color:var(--ew-accent-700)">NOTHING HERE YET</div>
+        <h3 class="ew-empty-title" style="font-size:30px">No events match that filter</h3>
+        <p class="ew-empty-body">{{ emptyHint }}</p>
+        <button onClick="{{ clearAll }}" class="ew-btn ew-btn-primary">Clear filters</button>
+      </div>
+    </sc-if>
+
+    <div id="venues" style="margin:80px 0 0;padding-top:var(--ew-space-8);border-top:var(--ew-rule) solid var(--ew-ink)">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:var(--ew-space-6);flex-wrap:wrap;margin-bottom:var(--ew-space-6)">
+        <div style="min-width:0">
+          <h2 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-0.03em">Venues</h2>
+          <p style="margin:10px 0 0;font-size:var(--ew-fs-body);line-height:1.6;color:var(--ew-text-muted);max-width:52ch">The six halls and grounds societies book most often. Pick one to filter the board by where it is happening.</p>
+        </div>
+        <sc-if value="{{ venueActive }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ clearVenue }}" class="ew-btn ew-btn-secondary">Clear venue filter</button>
+        </sc-if>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:var(--ew-space-6);align-items:start">
+        <div style="border:var(--ew-rule) solid var(--ew-ink);min-width:0">
+          <div style="padding:var(--ew-space-3) var(--ew-space-4);border-bottom:var(--ew-rule) solid var(--ew-ink);font-size:var(--ew-fs-micro);font-weight:800;letter-spacing:0.12em;color:var(--ew-text-muted)">ON CAMPUS</div>
+          <div class="ew-venue-list">
+            <sc-for list="{{ venues }}" as="v" hint-placeholder-count="6">
+              <button onClick="{{ v.go }}" class="ew-venue" aria-current="{{ v.on }}">
+                <span class="ew-venue-num num" aria-hidden="true">{{ v.n }}</span>
+                <span style="min-width:0;flex:1">
+                  <span style="display:block">{{ v.name }}</span>
+                  <span style="display:block;font-size:var(--ew-fs-micro);color:var(--ew-text-muted);margin-top:2px">{{ v.count }}</span>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div class="ew-map-frame" style="grid-column:span 2;min-width:0">
+          <knust-map></knust-map>
+        </div>
+      </div>
+    </div>
+
+    <div id="registrations" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:30px;margin:70px 0 0;padding:var(--ew-space-8) 0;border-top:var(--ew-rule) solid var(--ew-ink)">
+      <div>
+        <h2 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-0.03em">My registrations</h2>
+        <p style="margin:12px 0 0;font-size:var(--ew-fs-body);line-height:1.6;color:var(--ew-text-muted);max-width:40ch">Every event you have signed up for, with the reference the organizer checks against the list at the door.</p>
+      </div>
+      <sc-for list="{{ myRegistrations }}" as="t" hint-placeholder-count="2">
+        <div style="display:flex;gap:0;border:var(--ew-rule) solid var(--ew-ink);overflow:hidden;background:var(--ew-bg)">
+          <div style="width:78px;flex-shrink:0;background:var(--ew-ink);color:#fff;padding:var(--ew-space-4) 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+            <span class="num" style="font-size:var(--ew-fs-micro);font-weight:700;letter-spacing:0.12em;color:var(--ew-neutral-400)">{{ t.mon }}</span>
+            <span class="num" style="font-size:26px;font-weight:800;letter-spacing:-0.03em;margin-top:2px">{{ t.day }}</span>
+          </div>
+          <div style="padding:14px var(--ew-space-4);min-width:0;flex:1">
+            <div style="font-size:var(--ew-fs-body);font-weight:700;letter-spacing:-0.015em;line-height:1.25">{{ t.title }}</div>
+            <div class="num" style="font-size:var(--ew-fs-micro);color:var(--ew-text-muted);margin-top:7px">{{ t.detail }}</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;flex-wrap:wrap">
+              <span class="ew-tag ew-tag-ink num">{{ t.code }}</span>
+              <span style="{{ t.remindStyle }}">{{ t.remindLabel }}</span>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--ew-space-6);padding:var(--ew-space-6) 0 46px;border-top:var(--ew-rule) solid var(--ew-ink);flex-wrap:wrap">
+      <span style="display:flex;align-items:center;gap:10px;font-size:var(--ew-fs-small);color:var(--ew-text-muted)">
+        <svg width="17" height="17" viewBox="0 0 132 132" role="img" aria-label="EVENTWEB"><rect width="132" height="132" fill="#1a3ee8"></rect><rect x="26" y="30" width="80" height="14" fill="#ffffff"></rect><rect x="26" y="59" width="54" height="14" fill="#ffffff"></rect><rect x="26" y="88" width="80" height="14" fill="#ffffff"></rect></svg>
+        EVENTWEB · KNUST, Kumasi
+      </span>
+      <span style="font-size:var(--ew-fs-small);color:var(--ew-text-muted)">Posters © their respective organizers</span>
+    </div>
+  </div>
+</div>
+
+<sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeSheet }}" style="position:fixed;inset:0;background:rgba(10,11,14,0.7);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:36px 20px;overflow-y:auto">
+    <div onClick="{{ stop }}" role="dialog" aria-modal="true" aria-label="{{ sheet.title }}" style="background:var(--ew-bg);border:var(--ew-rule) solid var(--ew-ink);max-width:920px;width:100%;overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,0.45)">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))">
+
+        <div style="background:var(--ew-dark);padding:var(--ew-space-6);display:flex;flex-direction:column;gap:18px">
+          <div role="img" aria-label="{{ sheet.alt }}" style="{{ sheet.posterStyle }}">{{ sheet.posterFallback }}</div>
+          <div style="color:var(--ew-text-muted-on-dark);font-size:var(--ew-fs-small);line-height:1.6">{{ sheet.blurb }}</div>
+          <div style="display:grid;gap:1px;background:var(--ew-dark-line);overflow:hidden">
+            <sc-for list="{{ sheet.facts }}" as="fa" hint-placeholder-count="4">
+              <div style="background:var(--ew-dark-raised);padding:var(--ew-space-3) 14px;display:flex;justify-content:space-between;gap:var(--ew-space-3)">
+                <span style="font-size:var(--ew-fs-micro);font-weight:700;letter-spacing:0.12em;color:var(--ew-text-muted-on-dark)">{{ fa.k }}</span>
+                <span style="font-size:var(--ew-fs-small);font-weight:600;color:#fff;text-align:right">{{ fa.v }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="padding:var(--ew-space-6);display:flex;flex-direction:column;min-width:0">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:var(--ew-space-4)">
+            <div style="min-width:0">
+              <div style="font-size:var(--ew-fs-micro);font-weight:700;letter-spacing:0.14em;color:var(--ew-accent-700)">{{ sheet.organizer }}</div>
+              <h3 style="margin:10px 0 0;font-size:28px;line-height:1.05;font-weight:800;letter-spacing:-0.03em">{{ sheet.title }}</h3>
+            </div>
+            <button onClick="{{ closeSheet }}" class="ew-btn-icon" aria-label="Close" style="flex-shrink:0">×</button>
+          </div>
+
+          <sc-if value="{{ sheet.confirmed }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:var(--ew-space-6)">
+              <div style="background:var(--ew-accent-100);border:var(--ew-rule) solid var(--ew-accent);padding:20px">
+                <div style="display:flex;align-items:center;gap:8px;font-size:var(--ew-fs-micro);font-weight:700;letter-spacing:0.14em;color:var(--ew-accent-700)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13l6 6L20 6"></path></svg>
+                  REGISTERED
+                </div>
+                <div style="font-size:22px;font-weight:800;letter-spacing:-0.025em;margin-top:10px">You are on the list</div>
+                <div class="num" style="font-size:var(--ew-fs-small);color:var(--ew-accent-800);margin-top:8px">{{ sheet.confirmMeta }}</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:var(--ew-space-4);margin-top:20px;border:var(--ew-rule) solid var(--ew-ink);padding:var(--ew-space-4)">
+                <svg width="72" height="72" viewBox="0 0 24 24" style="flex-shrink:0" role="img" aria-label="Registration reference code"><rect width="24" height="24" fill="#fff"></rect><g fill="#101215"><rect x="1" y="1" width="6" height="6"></rect><rect x="3" y="3" width="2" height="2" fill="#fff"></rect><rect x="17" y="1" width="6" height="6"></rect><rect x="19" y="3" width="2" height="2" fill="#fff"></rect><rect x="1" y="17" width="6" height="6"></rect><rect x="3" y="19" width="2" height="2" fill="#fff"></rect><rect x="9" y="1" width="2" height="2"></rect><rect x="13" y="1" width="2" height="2"></rect><rect x="9" y="5" width="6" height="2"></rect><rect x="1" y="9" width="2" height="2"></rect><rect x="5" y="9" width="2" height="2"></rect><rect x="9" y="9" width="2" height="2"></rect><rect x="13" y="9" width="4" height="2"></rect><rect x="19" y="9" width="4" height="2"></rect><rect x="1" y="13" width="4" height="2"></rect><rect x="7" y="13" width="2" height="2"></rect><rect x="11" y="13" width="2" height="2"></rect><rect x="15" y="13" width="2" height="2"></rect><rect x="19" y="13" width="2" height="2"></rect><rect x="9" y="17" width="2" height="6"></rect><rect x="13" y="17" width="4" height="2"></rect><rect x="13" y="21" width="2" height="2"></rect><rect x="19" y="17" width="2" height="2"></rect><rect x="17" y="21" width="6" height="2"></rect></g></svg>
+                <div style="min-width:0">
+                  <div style="font-size:var(--ew-fs-micro);font-weight:700;letter-spacing:0.12em;color:var(--ew-text-muted)">YOUR REFERENCE</div>
+                  <div class="num" style="font-size:20px;font-weight:800;letter-spacing:0.02em;margin-top:6px">{{ sheet.code }}</div>
+                  <div style="font-size:var(--ew-fs-micro);color:var(--ew-text-muted);margin-top:6px">Saved under My registrations. {{ sheet.remindNote }}</div>
+                </div>
+              </div>
+              <button onClick="{{ closeSheet }}" class="ew-btn ew-btn-ink ew-btn-block" style="margin-top:20px;justify-content:flex-start">Done</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ sheet.registering }}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top:22px;display:flex;flex-direction:column;gap:20px">
+
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:var(--ew-space-3)">
+                  <span class="ew-label">{{ sheet.optionHeading }}</span>
+                  <span class="num" style="font-size:var(--ew-fs-micro);color:var(--ew-text-muted)">{{ sheet.places }}</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:var(--ew-space-2);margin-top:10px">
+                  <sc-for list="{{ sheet.options }}" as="t" hint-placeholder-count="2">
+                    <button onClick="{{ t.select }}" aria-pressed="{{ t.on }}" style="{{ t.style }}">
+                      <span style="{{ t.dotStyle }}"><span style="{{ t.innerStyle }}"></span></span>
+                      <span style="min-width:0;flex:1;text-align:left">
+                        <span style="display:block;font-size:14.5px;font-weight:700">{{ t.name }}</span>
+                        <span style="display:block;font-size:var(--ew-fs-micro);color:var(--ew-text-muted);margin-top:3px">{{ t.note }}</span>
+                      </span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="border-top:var(--ew-rule) solid var(--ew-neutral-200);padding-top:var(--ew-space-4)">
+                <button onClick="{{ sheet.toggleRemind }}" aria-pressed="{{ sheet.remindOn }}" style="{{ sheet.remindRowStyle }}">
+                  <span style="{{ sheet.remindBoxStyle }}">
+                    <sc-if value="{{ sheet.remindOn }}" hint-placeholder-val="{{ true }}">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13l6 6L20 6"></path></svg>
+                    </sc-if>
+                  </span>
+                  <span style="min-width:0;flex:1;text-align:left">
+                    <span style="display:block;font-size:14px;font-weight:700">Remind me before this starts</span>
+                    <span style="display:block;font-size:var(--ew-fs-micro);color:var(--ew-text-muted);margin-top:3px">One notice a day before, one an hour before doors open.</span>
+                  </span>
+                </button>
+              </div>
+
+              <button onClick="{{ sheet.confirm }}" class="ew-btn ew-btn-primary ew-btn-block" style="padding:var(--ew-space-4);font-size:var(--ew-fs-body)">{{ sheet.submitLabel }}</button>
+              <div style="font-size:var(--ew-fs-micro);color:var(--ew-text-muted)">{{ sheet.finePrint }}</div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a3ee8&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#1a3ee8&quot;,&quot;#0b62d6&quot;,&quot;#1d4ed8&quot;,&quot;#153fb0&quot;]}}">
+class Component extends DCLogic {
+  state = {
+    cat: 'All', query: '', sort: 'soonest', venue: null,
+    openId: null, option: 0, remindDraft: true, reminders: {}, confirmed: false,
+    issued: [], hero: 0, autoplay: true, dragX: 0, dragging: false
+  };
+
+  componentDidMount() {
+    this._auto = setInterval(() => {
+      if (this.state.autoplay && !this.state.openId) {
+        this.setState(s => ({ hero: (s.hero + 1) % this.events().length }));
+      }
+    }, 5200);
+    // The venue list and the Leaflet map stay in step: the map fires
+    // 'venue-select' when a pin is clicked, the list sets it from this side.
+    this._onVenue = e => this.setState({ venue: e.detail && e.detail.name ? e.detail.name : null });
+    document.addEventListener('venue-select', this._onVenue);
+    this.pushVenueData();
+  }
+
+  componentDidUpdate() { this.pushVenueData(); }
+
+  // Hand the map the poster, category and title for each venue so its pins can
+  // show the actual flyer. Re-sent after updates because the design-doc runtime
+  // can rebuild the element underneath us.
+  pushVenueData() {
+    const el = document.querySelector('knust-map');
+    if (!el || !el.setVenueData) return;
+    const byVenue = {};
+    this.events().forEach(e => {
+      if (byVenue[e.venue]) return;   // first event wins the pin
+      byVenue[e.venue] = {
+        cat: e.cat,
+        poster: e.poster,
+        title: e.title,
+        initials: this.initials(e)
+      };
+    });
+    el.setVenueData(byVenue);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._auto);
+    document.removeEventListener('venue-select', this._onVenue);
+  }
+
+  /* The five categories come straight from the client brief, section 4:
+     "academic, social, sports, religious, and business activities". */
+  cats() { return ['Academic', 'Social', 'Sports', 'Religious', 'Business']; }
+
+  catColor(c) {
+    return {
+      Academic: '#1a3ee8',
+      Social: '#b3261e',
+      Sports: '#0b6b3a',
+      Religious: '#6b3fa0',
+      Business: '#8a5a00'
+    }[c] || '#101215';
+  }
+
+  events() {
+    return [
+      {
+        id: 'aurelion', title: 'Aurelion: The Golden Throne of Masks', organizer: 'ECESA × CSS',
+        poster: 'assets/aurelion.png', cat: 'Academic', venue: 'Great Hall',
+        date: '2026-09-04', time: '19:00', cap: 700, reg: 512, soon: 10,
+        blurb: 'A masked dinner and awards night hosted by the Faculty of Electrical and Computer Engineering Students’ Association with the Computer Science Society.',
+        options: [
+          { name: 'Attending', note: 'Dinner and the awards programme' },
+          { name: 'Awards only', note: 'Doors at 9:00 PM, ceremony only' }
+        ]
+      },
+      {
+        id: 'madhouse', title: 'Mad House Experience', organizer: 'Mic & Madness',
+        poster: 'assets/madhouse.png', cat: 'Social', venue: 'The Yard',
+        date: '2026-07-25', time: '14:00', cap: 400, reg: 366, soon: 2,
+        blurb: 'Barbecue and live podcast show edition. Pure conversations, mad vibes, food off the grill all afternoon.',
+        options: [
+          { name: 'General', note: 'Grounds access and the podcast set' },
+          { name: 'Front row', note: 'Reserved seating at the podcast set' }
+        ]
+      },
+      {
+        id: 'bicycle', title: 'M&M Bicycle Race 3.0 — Lady’s Edition', organizer: 'Mic & Madness',
+        poster: 'assets/bicycle-race.png', cat: 'Sports', venue: 'Paa Joe Stadium',
+        date: '2026-07-18', time: '09:30', cap: 300, reg: 188, soon: 1,
+        blurb: 'Ride. Compete. Inspire. The third edition runs the campus loop, ladies’ category, with pace groups for first-timers.',
+        options: [
+          { name: 'Rider', note: 'Race number and timing chip' },
+          { name: 'Supporter', note: 'Route access, no race number' }
+        ]
+      },
+      {
+        id: 'watchparty', title: 'Final World Cup Watch Party', organizer: 'ATLAS × Barbados',
+        poster: 'assets/watch-party.png', cat: 'Social', venue: 'Los Barbados',
+        date: '2026-07-19', time: '18:00', cap: 500, reg: 421, soon: 3,
+        blurb: 'Spain against Argentina on the big screens. Doors at 6, kick-off at 7:00 PM.',
+        options: [
+          { name: 'Standing', note: 'General floor' },
+          { name: 'Seated', note: 'Reserved chair, screen-facing' }
+        ]
+      },
+      {
+        id: 'kickoff', title: 'Kickoff Fusion 3.0 — Independence Day Edition', organizer: 'ATLAS',
+        poster: 'assets/kickoff-fusion.png', cat: 'Social', venue: 'Brunei Sports Complex',
+        date: '2026-03-06', time: '20:00', cap: 1200, reg: 640, soon: 24,
+        blurb: 'Live DJ sets, games and a night market at the Brunei complex.',
+        options: [
+          { name: 'Attending', note: 'Full grounds access' },
+          { name: 'Night market only', note: 'Stalls from 6:00 PM' }
+        ]
+      },
+      {
+        id: 'miles', title: 'Miles & Mindset — Kick Off Fusion Takeover', organizer: 'ATLAS × M&M Run Club',
+        poster: 'assets/miles-mindset.png', cat: 'Sports', venue: 'College of Science Auditorium',
+        date: '2026-02-28', time: '05:45', cap: 250, reg: 96, soon: 18,
+        blurb: 'An early run followed by a talk on discipline and training. Partners: Aristos Autos, Mic & Madness, CyndicatePR, Block 23.',
+        options: [
+          { name: 'Runner', note: 'Run plus the talk' },
+          { name: 'Talk only', note: 'Auditorium session from 7:00 AM' }
+        ]
+      },
+      {
+        id: 'prayer', title: 'School of Prayer ’26 — Endunamoo', organizer: 'SCC',
+        poster: 'assets/school-of-prayer.png', cat: 'Religious', venue: 'KNUST Interdenominational Church',
+        date: '2026-03-02', time: '19:30', cap: 900, reg: 402, soon: 20,
+        blurb: 'Thirty days of fasting and prayer. In person Mondays and Fridays, 7:30 to 8:30 PM; online the rest of the week.',
+        options: [
+          { name: 'In person', note: 'KNUST Interdenominational Church' },
+          { name: 'Online', note: 'Link sent each evening, 9 to 10 PM' }
+        ]
+      },
+      {
+        id: 'nkabom',
+        title: 'Tertiary Entrepreneurial Training in Agri-Food',
+        organizer: 'NKABOM Collaborative',
+        poster: 'assets/nkabom-collaborative.png',
+        cat: 'Business',
+        venue: 'KNUST Campus',
+        date: '2026-09-09',
+        time: '09:00',
+        cap: 250,
+        reg: 184,
+        soon: 12,
+        whenDisplay: 'Wed 9 – Fri 18 Sep · 09:00',
+        deadline: 'Mon 31 Aug 2026',
+        applyUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSdDwt0mkXsAJYst4N4YlUrqjvyTd0wnEslvVlbFxbzTVmFT-w/viewform',
+        blurb: 'Entrepreneurial training for KNUST students with business startup ideas in the Agri-Food value chain, in partnership with Mastercard Foundation. Training period: 9th–18th Sept 2026. Females, PWDs, internally displaced youth, and refugees are encouraged to apply.',
+        options: [
+          { name: 'Agri-Food Startup Track', note: 'Full 10-day training cohort on KNUST Campus (9–18 Sept)' },
+          { name: 'Priority Mentorship Track', note: 'For Females, PWDs, displaced youth & refugee founders' }
+        ]
+      }
+    ];
+  }
+
+  when(e) {
+    if (e.whenDisplay) return e.whenDisplay;
+    const d = new Date(e.date + 'T00:00');
+    return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) + ' · ' + e.time;
+  }
+
+  /* Initials for the poster-less fallback block. */
+  initials(e) {
+    return e.title.replace(/[^A-Za-z ]/g, '').split(/\s+/).filter(Boolean).slice(0, 2)
+      .map(w => w[0].toUpperCase()).join('');
+  }
+
+  posterBg(e, extra) {
+    if (e.poster) {
+      return 'background-image:url(' + e.poster + ');background-size:cover;background-position:center;' +
+        'filter:grayscale(0.12);' + (extra || '');
+    }
+    return 'background:' + this.catColor(e.cat) + ';color:#fff;display:flex;align-items:center;justify-content:center;' +
+      'font-size:44px;font-weight:900;letter-spacing:-0.04em;' + (extra || '');
+  }
+
+  renderVals() {
+    const accent = this.props.accent ?? '#1a3ee8';
+    const all = this.events();
+    const st = this.state;
+
+    const chips = ['All'].concat(this.cats()).map(label => {
+      const on = st.cat === label;
+      return {
+        label,
+        on: String(on),
+        go: () => this.setState({ cat: label }),
+        dotStyle: label === 'All'
+          ? 'display:none'
+          : 'background:' + this.catColor(label) + (on ? ';outline:1px solid #fff' : '')
+      };
+    });
+
+    const q = st.query.trim().toLowerCase();
+    let list = all.filter(e =>
+      (st.cat === 'All' || e.cat === st.cat) &&
+      (!st.venue || e.venue === st.venue) &&
+      (!q || (e.title + ' ' + e.organizer + ' ' + e.venue + ' ' + e.cat).toLowerCase().includes(q))
+    );
+    if (st.sort === 'soonest') list = list.slice().sort((a, b) => a.soon - b.soon);
+    if (st.sort === 'popular') list = list.slice().sort((a, b) => b.reg - a.reg);
+    if (st.sort === 'space') list = list.slice().sort((a, b) => (b.cap - b.reg) - (a.cap - a.reg));
+
+    const open = id => this.setState({ openId: id, option: 0, confirmed: false, remindDraft: true });
+
+    const hi = ((st.hero % all.length) + all.length) % all.length;
+    const move = n => this.setState({ hero: ((n % all.length) + all.length) % all.length, autoplay: false });
+    const dx = st.dragging ? st.dragX : 0;
+
+    const deck = all.map((e, i) => {
+      const off = (i - hi + all.length) % all.length;
+      const shown = off < 3;
+      const t = [
+        { x: 0, sc: 1, op: 1, z: 30, rot: 0 },
+        { x: 62, sc: 0.86, op: 0.5, z: 20, rot: 3 },
+        { x: 112, sc: 0.74, op: 0.24, z: 10, rot: 5.5 }
+      ][off] || { x: 150, sc: 0.6, op: 0, z: 0, rot: 7 };
+      return {
+        alt: (off === 0 ? 'Open ' : 'Show ') + e.title,
+        click: () => (off === 0 ? open(e.id) : move(i)),
+        style: 'position:absolute;top:0;left:0;padding:0;border:2px solid #08090c;height:390px;aspect-ratio:2/3;' +
+          this.posterBg(e) +
+          'box-shadow:0 30px 70px rgba(0,0,0,' + (off === 0 ? '0.62' : '0.4') + ');' +
+          'cursor:' + (off === 0 ? (st.dragging ? 'grabbing' : 'grab') : 'pointer') + ';touch-action:pan-y;' +
+          'transform-origin:left center;transform:translateX(calc(' + t.x + '% + ' + (off === 0 ? dx : dx * 0.28) + 'px)) scale(' +
+          (off === 0 ? t.sc : t.sc + Math.min(0.08, Math.abs(dx) / 2600)) + ') rotate(' +
+          (t.rot + (off === 0 ? dx / 26 : 0)) + 'deg);' +
+          'opacity:' + (off === 0 ? Math.max(0.35, 1 - Math.abs(dx) / 520) : t.op) + ';z-index:' + t.z +
+          ';pointer-events:' + (shown ? 'auto' : 'none') + ';' +
+          (st.dragging ? 'transition:none' : 'transition:transform 620ms cubic-bezier(0.22,1,0.36,1),opacity 480ms ease,box-shadow 480ms ease')
+      };
+    });
+
+    const dots = all.map((e, i) => ({
+      alt: 'Show ' + e.title,
+      go: () => move(i),
+      style: 'width:' + (i === hi ? '24px' : '10px') + ';height:10px;border:none;padding:0;cursor:pointer;background:' +
+        (i === hi ? accent : 'rgba(255,255,255,0.34)') + ';transition:width 320ms ease,background 320ms ease'
+    }));
+
+    const cu = all[hi];
+    const active = {
+      organizer: cu.organizer.toUpperCase(),
+      title: cu.title,
+      cat: cu.cat,
+      line: this.when(cu) + ' · ' + cu.venue,
+      left: (cu.cap - cu.reg).toLocaleString(),
+      cta: 'Register',
+      open: () => open(cu.id)
+    };
+
+    const closing = all.slice().sort((a, b) => (a.cap - a.reg) - (b.cap - b.reg)).slice(0, 4).map(e => {
+      const pct = Math.round((e.reg / e.cap) * 100);
+      return {
+        posterStyle: 'display:block;width:52px;height:78px;flex-shrink:0;border:1px solid #201e1d;font-size:15px;' +
+          this.posterBg(e),
+        title: e.title, when: this.when(e),
+        left: (e.cap - e.reg) + ' places left · ' + pct + '% full',
+        leftColor: pct > 85 ? '#8c1d18' : '#4b5160',
+        barStyle: 'display:block;height:6px;width:' + pct + '%;background:' + (pct > 85 ? '#8c1d18' : accent),
+        open: () => open(e.id)
+      };
+    });
+
+    const events = list.map(e => {
+      const left = e.cap - e.reg;
+      const d = new Date(e.date + 'T00:00');
+      const on = !!st.reminders[e.id];
+      return {
+        alt: e.poster ? e.title + ' poster' : e.title,
+        posterStyle: 'position:absolute;inset:0;' + this.posterBg(e),
+        posterFallback: e.poster ? '' : this.initials(e),
+        cat: e.cat,
+        catStyle: 'position:absolute;top:10px;left:10px;font-size:12px;font-weight:800;letter-spacing:0.08em;padding:5px 9px;' +
+          'background:' + this.catColor(e.cat) + ';color:#fff;text-transform:uppercase',
+        title: e.title, organizer: e.organizer.toUpperCase(),
+        when: this.when(e), venue: e.venue,
+        stamp: d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }).toUpperCase() + ' · ' + e.time,
+        leftShort: left + ' left',
+        leftStyle: 'font-size:12px;font-weight:700;letter-spacing:0.06em;color:' +
+          (left < 60 ? '#ffc9c2' : '#ffffff') + ';white-space:nowrap;font-variant-numeric:tabular-nums',
+        cta: 'Register',
+        open: () => open(e.id),
+        reminded: String(on),
+        bellFill: on ? 'currentColor' : 'none',
+        remindLabel: (on ? 'Turn off the reminder for ' : 'Remind me about ') + e.title,
+        remindStyle: on ? 'background:#1a3ee8;border-color:#1a3ee8;color:#fff' : '',
+        toggleRemind: () => this.setState(s => ({ reminders: { ...s.reminders, [e.id]: !s.reminders[e.id] } }))
+      };
+    });
+
+    /* Venue rail — the six places the map pins, with a live count so an
+       empty one is obvious before you click it. */
+    const venueNames = [
+      'Great Hall', 'Paa Joe Stadium', 'College of Science Auditorium',
+      'Prempeh II Library', 'KNUST Interdenominational Church', 'KNUST Campus'
+    ];
+    const venues = venueNames.map((name, i) => {
+      const n = all.filter(e => e.venue === name).length;
+      return {
+        n: String(i + 1),
+        name,
+        count: n === 0 ? 'Nothing booked yet' : n + (n === 1 ? ' event' : ' events'),
+        on: String(st.venue === name),
+        go: () => {
+          const next = st.venue === name ? null : name;
+          this.setState({ venue: next });
+          const el = document.querySelector('knust-map');
+          if (el && el.setSelected) el.setSelected(next);
+        }
+      };
+    });
+
+    const baseRegistrations = [
+      { mon: 'JUL', day: '19', title: 'Final World Cup Watch Party', detail: 'Los Barbados · 6:00 PM · Seated', code: 'EW-4471-KQ', remind: true },
+      { mon: 'FEB', day: '28', title: 'Miles & Mindset', detail: 'College of Science Auditorium · 5:45 AM · Runner', code: 'EW-2298-BD', remind: false }
+    ];
+    const myRegistrations = [...st.issued, ...baseRegistrations].map(t => ({
+      ...t,
+      remindLabel: t.remind ? 'Reminder on' : 'No reminder',
+      remindStyle: 'font-size:12px;font-weight:700;letter-spacing:0.06em;padding:5px 9px;' +
+        (t.remind ? 'background:#eef1ff;color:#0e2478' : 'border:1px solid #e0e2e8;color:#6c717c')
+    }));
+
+    const cur = all.find(e => e.id === st.openId);
+    let sheet = {};
+    if (cur) {
+      const idx = Math.min(st.option, cur.options.length - 1);
+      const opt = cur.options[idx];
+      const d = new Date(cur.date + 'T00:00');
+      const code = 'EW-' + String(1000 + (cur.title.length * 37 + idx * 11) % 9000) + '-' + cur.id.slice(0, 2).toUpperCase();
+
+      sheet = {
+        alt: cur.poster ? cur.title + ' poster' : cur.title,
+        posterStyle: 'width:100%;aspect-ratio:2/3;border:2px solid #242832;' + this.posterBg(cur),
+        posterFallback: cur.poster ? '' : this.initials(cur),
+        title: cur.title, organizer: cur.organizer.toUpperCase(), blurb: cur.blurb,
+        facts: [
+          { k: 'WHEN', v: this.when(cur) },
+          { k: 'WHERE', v: cur.venue },
+          ...(cur.deadline ? [{ k: 'DEADLINE', v: cur.deadline }] : []),
+          { k: 'CATEGORY', v: cur.cat },
+          { k: 'PLACES LEFT', v: String(cur.cap - cur.reg) }
+        ],
+        places: (cur.cap - cur.reg) + ' of ' + cur.cap + ' left',
+        optionHeading: 'HOW YOU ARE ATTENDING',
+        options: cur.options.map((t, i) => {
+          const on = i === idx;
+          return {
+            name: t.name, note: t.note,
+            on: String(on),
+            select: () => this.setState({ option: i }),
+            style: 'display:flex;align-items:center;gap:13px;width:100%;border:2px solid ' + (on ? accent : '#e0e2e8') +
+              ';background:' + (on ? '#eef1ff' : '#fff') +
+              ';font-family:inherit;padding:14px;cursor:pointer;color:#101215;min-height:44px',
+            dotStyle: 'width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:2px solid ' +
+              (on ? accent : '#c3c7d0'),
+            innerStyle: 'width:8px;height:8px;display:block;background:' + (on ? accent : 'transparent')
+          };
+        }),
+
+        remindOn: String(st.remindDraft),
+        toggleRemind: () => this.setState(s => ({ remindDraft: !s.remindDraft })),
+        remindRowStyle: 'display:flex;align-items:flex-start;gap:12px;width:100%;border:none;background:none;' +
+          'font-family:inherit;padding:2px 0;cursor:pointer;min-height:44px',
+        remindBoxStyle: 'width:20px;height:20px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;' +
+          'border:2px solid ' + (st.remindDraft ? accent : '#c3c7d0') + ';background:' + (st.remindDraft ? accent : '#fff'),
+
+        submitLabel: cur.applyUrl ? 'Apply on Google Form →' : 'Confirm registration',
+        finePrint: cur.applyUrl
+          ? 'Opens the official application form in a new tab. In partnership with Mastercard Foundation.'
+          : (st.remindDraft
+            ? 'Free to attend. You can cancel your place, or turn the reminder off, from My registrations.'
+            : 'Free to attend. You can cancel your place from My registrations.'),
+        registering: !st.confirmed,
+        confirmed: st.confirmed,
+        confirmMeta: opt.name + ' · ' + this.when(cur) + ' · ' + cur.venue,
+        code,
+        remindNote: st.remindDraft ? 'A reminder is set for the day before.' : 'No reminder set.',
+        confirm: () => {
+          if (cur.applyUrl) {
+            window.open(cur.applyUrl, '_blank', 'noopener,noreferrer');
+          }
+          this.setState(s => ({
+            confirmed: true,
+            reminders: { ...s.reminders, [cur.id]: s.remindDraft },
+            issued: [{
+              mon: d.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase(),
+              day: String(d.getDate()).padStart(2, '0'),
+              title: cur.title,
+              detail: cur.venue + ' · ' + cur.time + ' · ' + opt.name,
+              code,
+              remind: s.remindDraft
+            }, ...s.issued]
+          }));
+        }
+      };
+    }
+
+    const filterBits = [];
+    if (st.cat !== 'All') filterBits.push(st.cat);
+    if (st.venue) filterBits.push(st.venue);
+    if (q) filterBits.push('“' + st.query.trim() + '”');
+
+    return {
+      chips, events, closing, myRegistrations, sheet, deck, dots, active, venues,
+      venueActive: !!st.venue,
+      clearVenue: () => {
+        this.setState({ venue: null });
+        const el = document.querySelector('knust-map');
+        if (el && el.setSelected) el.setSelected(null);
+      },
+      resultCount: list.length + (list.length === 1 ? ' event' : ' events') +
+        (filterBits.length ? ' · ' + filterBits.join(' · ') : ''),
+      emptyHint: filterBits.length
+        ? 'Nothing under ' + filterBits.join(' · ') + ' right now. Clear the filters to see all ' + all.length + ' events.'
+        : 'There are no events on the board yet.',
+      counter: String(hi + 1).padStart(2, '0') + ' / ' + String(all.length).padStart(2, '0'),
+      prev: () => move(hi - 1),
+      next: () => move(hi + 1),
+      deckStyle: 'position:relative;height:390px;margin-bottom:16px;user-select:none;touch-action:pan-y;' +
+        'cursor:' + (st.dragging ? 'grabbing' : 'default'),
+      dragStart: e => { this._x0 = e.clientX; this.setState({ dragging: true, dragX: 0, autoplay: false }); },
+      dragMove: e => { if (this.state.dragging) this.setState({ dragX: e.clientX - this._x0 }); },
+      dragEnd: () => {
+        const d = this.state.dragX;
+        this.setState({ dragging: false, dragX: 0 });
+        if (Math.abs(d) > 70) move(d < 0 ? hi + 1 : hi - 1);
+      },
+      query: st.query, onQuery: e => this.setState({ query: e.target.value }),
+      sort: st.sort, onSort: e => this.setState({ sort: e.target.value }),
+      hasResults: list.length > 0,
+      isEmpty: list.length === 0,
+      clearAll: () => {
+        this.setState({ cat: 'All', query: '', venue: null });
+        const el = document.querySelector('knust-map');
+        if (el && el.setSelected) el.setSelected(null);
+      },
+      sheetOpen: !!cur,
+      closeSheet: () => this.setState({ openId: null, confirmed: false }),
+      stop: e => e.stopPropagation()
+    };
+  }
+}
+</script>
+</body>
+</html>

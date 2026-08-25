@@ -1,0 +1,151 @@
+<!-- ============================================================
+     ARCHIVED — paid ticketing + Mobile Money checkout
+     ============================================================
+
+     Removed from "EVENTWEB Events.dc.html" on 2026-08-25.
+
+     Reason: the client brief (NTI OHENEBA NTI 9030123.pdf), section 5
+     "Scope", states verbatim:
+
+         "The project will not include payment processing or
+          advanced ticketing systems."
+
+     Nothing here is broken — it is out of scope for this submission.
+     Kept intact so it can be restored if the scope is ever widened
+     (the proposal lists a mobile app with push notifications under
+     "FUTURE UPDATES", so a phase 2 is plausible).
+
+     To restore: reinstate the markup blocks below, the feeRate prop
+     on the component's data-props attribute, and the pricing helpers
+     (fmt, minPrice, tiers[].price, methods, fee/subtotal/total).
+     ============================================================ -->
+
+<!-- ---------- 1. Tier picker + quantity stepper ---------- -->
+          <sc-if value="{{ sheet.buying }}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top:22px;display:flex;flex-direction:column;gap:20px">
+
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+                  <span style="font-size:12px;font-weight:700;letter-spacing:0.12em;color:#9aa0aa">{{ sheet.tierHeading }}</span>
+                  <span class="num" style="font-size:12px;color:#9aa0aa">{{ sheet.seats }}</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+                  <sc-for list="{{ sheet.tiers }}" as="t" hint-placeholder-count="3">
+                    <button onClick="{{ t.select }}" style="{{ t.style }}">
+                      <span style="{{ t.dotStyle }}"><span style="{{ t.innerStyle }}"></span></span>
+                      <span style="flex:1;min-width:0;text-align:left">
+                        <span style="display:block;font-size:14.5px;font-weight:700;letter-spacing:-0.01em">{{ t.name }}</span>
+                        <span style="display:block;font-size:12.5px;color:#6c717c;margin-top:3px">{{ t.note }}</span>
+                      </span>
+                      <span class="num" style="font-size:15px;font-weight:800;white-space:nowrap">{{ t.price }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+                <span style="font-size:12px;font-weight:700;letter-spacing:0.12em;color:#9aa0aa">QUANTITY</span>
+                <div style="display:flex;align-items:center;gap:0;border:1px solid #e8e9ed;border-radius:10px;overflow:hidden">
+                  <button onClick="{{ sheet.dec }}" style="border:none;background:#fff;font-family:inherit;font-size:17px;width:40px;height:40px;cursor:pointer;color:#101215" style-hover="background:#f4f5f7">−</button>
+                  <span class="num" style="width:46px;text-align:center;font-size:15px;font-weight:700">{{ sheet.qty }}</span>
+                  <button onClick="{{ sheet.inc }}" style="border:none;background:#fff;font-family:inherit;font-size:17px;width:40px;height:40px;cursor:pointer;color:#101215" style-hover="background:#f4f5f7">+</button>
+                </div>
+              </div>
+
+
+<!-- ---------- 2. Payment method + fee + total ---------- -->
+              <sc-if value="{{ sheet.needsPay }}" hint-placeholder-val="{{ true }}">
+                <div>
+                  <div style="font-size:12px;font-weight:700;letter-spacing:0.12em;color:#9aa0aa">PAY WITH</div>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:12px">
+                    <sc-for list="{{ sheet.methods }}" as="m" hint-placeholder-count="3">
+                      <button onClick="{{ m.select }}" style="{{ m.style }}">
+                        <span style="display:block;font-size:13.5px;font-weight:700">{{ m.label }}</span>
+                        <span style="display:block;font-size:11.5px;color:#6c717c;margin-top:3px">{{ m.note }}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+
+              <div style="margin-top:auto;border-top:1px solid #e8e9ed;padding-top:18px">
+                <div style="display:flex;justify-content:space-between;font-size:13.5px;color:#6c717c">
+                  <span>{{ sheet.subLabel }}</span><span class="num">{{ sheet.subTotal }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:13.5px;color:#6c717c;margin-top:7px">
+                  <span>Platform fee</span><span class="num">{{ sheet.fee }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:14px">
+                  <span style="font-size:15px;font-weight:700">Total</span>
+                  <span class="num" style="font-size:26px;font-weight:800;letter-spacing:-0.03em">{{ sheet.total }}</span>
+                </div>
+                <button onClick="{{ sheet.confirm }}" style="width:100%;margin-top:16px;border:none;border-radius:11px;background:#1a3ee8;color:#fff;font-family:inherit;font-size:15px;font-weight:700;padding:16px;cursor:pointer" style-hover="background:#122ea8">{{ sheet.payLabel }}</button>
+                <div style="font-size:12px;color:#9aa0aa;margin-top:12px;text-align:center">{{ sheet.finePrint }}</div>
+              </div>
+            </div>
+
+<!-- ---------- 3. Pricing logic (from the component script) ---------- -->
+<script type="text/x-dc-archived">
+  fmt(n) { return 'GH¢ ' + n.toLocaleString(); }
+
+      const fee = sub === 0 ? 0 : Math.max(1, Math.round(sub * feeRate / 100));
+      const free = tier.price === 0;
+      const d = new Date(cur.date + 'T00:00');
+
+      sheet = {
+        alt: cur.title + ' poster',
+        posterStyle: 'width:100%;aspect-ratio:2/3;border-radius:12px;background-image:url(' + cur.poster +
+          ');background-size:cover;background-position:center',
+        title: cur.title, organizer: cur.organizer.toUpperCase(), blurb: cur.blurb,
+        facts: [
+          { k: 'WHEN', v: this.when(cur) },
+          { k: 'WHERE', v: cur.venue },
+          { k: 'CATEGORY', v: cur.cat },
+          { k: 'SEATS LEFT', v: String(cur.cap - cur.reg) }
+        ],
+        seats: (cur.cap - cur.reg) + ' of ' + cur.cap + ' left',
+        tierHeading: free && cur.tiers.every(t => t.price === 0) ? 'HOW YOU ARE ATTENDING' : 'CHOOSE A TICKET',
+        tiers: cur.tiers.map((t, i) => {
+          const on = i === Math.min(st.tier, cur.tiers.length - 1);
+          return {
+            name: t.name, note: t.note,
+            price: t.price === 0 ? 'Free' : this.fmt(t.price),
+            select: () => this.setState({ tier: i }),
+            style: 'display:flex;align-items:center;gap:13px;width:100%;border:1px solid ' + (on ? accent : '#e8e9ed') +
+              ';border-radius:12px;background:' + (on ? '#f5f7ff' : '#fff') +
+              ';font-family:inherit;padding:14px;cursor:pointer;color:#101215',
+            dotStyle: 'width:18px;height:18px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid ' +
+              (on ? accent : '#c9cdd6'),
+            innerStyle: 'width:8px;height:8px;border-radius:50%;display:block;background:' + (on ? accent : 'transparent')
+          };
+        }),
+        qty: String(st.qty),
+        inc: () => this.setState(s => ({ qty: Math.min(10, s.qty + 1) })),
+        dec: () => this.setState(s => ({ qty: Math.max(1, s.qty - 1) })),
+        needsPay: !free,
+        methods: [
+          { label: 'MTN MoMo', note: '024 · · · 118' },
+          { label: 'Telecel Cash', note: '050 · · · 447' },
+          { label: 'Card', note: 'Visa / Mastercard' }
+        ].map(m => ({
+          label: m.label, note: m.note,
+          select: () => this.setState({ method: m.label }),
+          style: 'border:1px solid ' + (st.method === m.label ? accent : '#e8e9ed') + ';border-radius:11px;background:' +
+            (st.method === m.label ? '#f5f7ff' : '#fff') + ';font-family:inherit;padding:12px;text-align:left;cursor:pointer;color:#101215'
+        })),
+        subLabel: tier.name + ' × ' + st.qty,
+        subTotal: sub === 0 ? 'Free' : this.fmt(sub),
+        fee: fee === 0 ? '—' : this.fmt(fee),
+        total: sub === 0 ? 'Free' : this.fmt(sub + fee),
+        payLabel: free ? 'Confirm free registration' : 'Pay ' + this.fmt(sub + fee) + ' with ' + st.method,
+        finePrint: free ? 'A reminder lands one hour before doors open.' : 'Refundable up to 48 hours before doors open.',
+        buying: !st.confirmed,
+        confirmed: st.confirmed,
+        confirmKicker: free ? 'REGISTERED' : 'PAYMENT RECEIVED',
+        confirmLine: free ? 'You are on the list' : this.fmt(sub + fee) + ' paid',
+        confirmMeta: tier.name + ' × ' + st.qty + ' · ' + this.when(cur) + ' · ' + cur.venue,
+        code: 'EW-' + String(1000 + (st.qty * 37 + cur.title.length * 11) % 9000) + '-' + cur.id.slice(0, 2).toUpperCase(),
+        confirm: () => this.setState(s => ({
+          confirmed: true,
+          issued: [{
+</script>
