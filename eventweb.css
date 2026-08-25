@@ -592,3 +592,150 @@ html, body { max-width: 100%; }
   /* The venue rail sits above the map instead of beside it. */
   .ew-map-frame { grid-column: auto !important; min-height: 360px; }
 }
+
+/* ============================================================
+   ORGANIZER CONSOLE RESPONSIVE
+   Ensures the entire event management and listing form has 100%
+   full-width breathing room on mobile screens without being squeezed.
+   ============================================================ */
+
+.ew-org-layout {
+  display: grid;
+  grid-template-columns: 244px 1fr;
+  min-height: 100vh;
+}
+
+.ew-org-sidebar {
+  background: var(--ew-bg);
+  border-right: 1px solid var(--ew-neutral-200);
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  box-sizing: border-box;
+}
+
+.ew-org-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ew-org-main {
+  padding: 26px 32px 56px;
+  min-width: 0;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.ew-org-editor-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(300px, 1fr);
+  gap: 22px;
+  margin-top: 24px;
+  align-items: start;
+}
+
+@media (max-width: 1020px) {
+  .ew-org-editor-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .ew-org-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .ew-org-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--ew-neutral-200);
+    padding: 14px 16px;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: var(--ew-bg);
+  }
+
+  .ew-org-sidebar-brand-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .ew-org-sidebar-semester,
+  .ew-org-sidebar-user,
+  .ew-org-nav-label {
+    display: none !important;
+  }
+
+  .ew-org-nav-group {
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 8px;
+    width: 100%;
+    padding-bottom: 2px;
+  }
+
+  .ew-org-nav-group::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ew-org-nav-group button {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    white-space: nowrap !important;
+    padding: 9px 15px !important;
+    border: 1px solid var(--ew-neutral-300) !important;
+    font-size: 13.5px !important;
+  }
+
+  .ew-org-main {
+    padding: 16px 14px 48px;
+    width: 100%;
+  }
+
+  .ew-org-table-header {
+    display: none !important;
+  }
+
+  .ew-org-table-row {
+    display: flex !important;
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 14px !important;
+    padding: 16px 14px !important;
+  }
+
+  .ew-org-table-row > * {
+    width: 100%;
+  }
+
+  .ew-org-table-actions {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .ew-org-table-actions button {
+    flex: 1;
+    text-align: center;
+    padding: 11px 14px !important;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 600px) {
+  .ew-org-option-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+}
+

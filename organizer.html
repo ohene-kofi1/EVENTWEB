@@ -27,17 +27,20 @@
 
 <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#1a3ee8"></rect><rect x="120" y="130" width="180" height="30" fill="#ffffff"></rect><rect x="120" y="185" width="120" height="30" fill="#ffffff"></rect><rect x="120" y="240" width="180" height="30" fill="#ffffff"></rect></svg></template>
 
-<div style="display:grid;grid-template-columns:244px 1fr;min-height:100vh">
+<div class="ew-org-layout">
 
-  <div style="background:var(--ew-bg);border-right:1px solid var(--ew-neutral-200);padding:22px 18px;display:flex;flex-direction:column;gap:28px">
-    <div style="display:flex;align-items:center;gap:10px">
-      <svg width="24" height="24" viewBox="0 0 132 132" aria-label="EVENTWEB"><rect width="132" height="132" fill="#1a3ee8"></rect><rect x="26" y="30" width="80" height="14" fill="#ffffff"></rect><rect x="26" y="59" width="54" height="14" fill="#ffffff"></rect><rect x="26" y="88" width="80" height="14" fill="#ffffff"></rect></svg>
-      <span style="font-weight:800;font-size:19px;letter-spacing:-0.02em">EVENTWEB</span>
+  <div class="ew-org-sidebar">
+    <div class="ew-org-sidebar-brand-row">
+      <div style="display:flex;align-items:center;gap:10px">
+        <svg width="24" height="24" viewBox="0 0 132 132" aria-label="EVENTWEB"><rect width="132" height="132" fill="#1a3ee8"></rect><rect x="26" y="30" width="80" height="14" fill="#ffffff"></rect><rect x="26" y="59" width="54" height="14" fill="#ffffff"></rect><rect x="26" y="88" width="80" height="14" fill="#ffffff"></rect></svg>
+        <span style="font-weight:800;font-size:19px;letter-spacing:-0.02em">EVENTWEB</span>
+      </div>
+      <a href="index.html" style="font-size:13px;font-weight:600" class="ew-mobile-board-link">View board</a>
     </div>
 
     <div>
-      <div style="font-size:12px;font-weight:700;letter-spacing:0.12em;color:var(--ew-text-muted);margin-bottom:10px">ORGANIZER</div>
-      <div style="display:flex;flex-direction:column;gap:3px">
+      <div class="ew-org-nav-label" style="font-size:12px;font-weight:700;letter-spacing:0.12em;color:var(--ew-text-muted);margin-bottom:10px">ORGANIZER</div>
+      <div class="ew-org-nav-group">
         <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="4">
           <button onClick="{{ n.go }}" style="{{ n.style }}">
             <span style="{{ n.dotStyle }}"></span>
@@ -48,13 +51,13 @@
       </div>
     </div>
 
-    <div style="background:var(--ew-neutral-100);border-radius:0;padding:16px">
+    <div class="ew-org-sidebar-semester" style="background:var(--ew-neutral-100);border-radius:0;padding:16px">
       <div style="font-size:12px;font-weight:700;letter-spacing:0.12em;color:var(--ew-accent)">THIS SEMESTER</div>
       <div style="font-size:30px;font-weight:800;letter-spacing:-0.03em;margin-top:8px">{{ totalReg }}</div>
       <div style="font-size:12px;color:var(--ew-text-muted);margin-top:2px">registrations across your events</div>
     </div>
 
-    <div style="margin-top:auto;display:flex;align-items:center;gap:10px;padding-top:18px;border-top:1px solid var(--ew-neutral-200)">
+    <div class="ew-org-sidebar-user" style="margin-top:auto;display:flex;align-items:center;gap:10px;padding-top:18px;border-top:1px solid var(--ew-neutral-200)">
       <span style="width:34px;height:34px;border-radius:0;background:var(--ew-accent);color:var(--ew-bg);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">M&M</span>
       <span style="min-width:0">
         <span style="display:block;font-size:13px;font-weight:600">Mic &amp; Madness</span>
@@ -63,7 +66,7 @@
     </div>
   </div>
 
-  <div style="padding:26px 32px 56px;min-width:0;overflow-x:hidden">
+  <div class="ew-org-main">
 
     <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
       <div>
@@ -97,12 +100,12 @@
           </div>
         </div>
 
-        <div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) auto minmax(0,0.9fr) auto;gap:12px;padding:12px 20px;background:var(--ew-neutral-100);border-bottom:1px solid var(--ew-neutral-200);font-size:12px;font-weight:700;letter-spacing:0.1em;color:var(--ew-text-muted)">
+        <div class="ew-org-table-header">
           <span>EVENT</span><span>WHEN &amp; WHERE</span><span>STATUS</span><span>REGISTRATIONS</span><span></span>
         </div>
 
         <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
-          <div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) auto minmax(0,0.9fr) auto;gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--ew-neutral-200)">
+          <div class="ew-org-table-row">
             <div style="display:flex;align-items:center;gap:12px;min-width:0">
               <span style="{{ r.posterStyle }}"></span>
               <span style="min-width:0">
@@ -124,7 +127,7 @@
                 <div style="{{ r.barStyle }}"></div>
               </div>
             </div>
-            <div style="display:flex;gap:8px;justify-content:flex-end">
+            <div class="ew-org-table-actions">
               <button onClick="{{ r.edit }}" style="border:1px solid var(--ew-neutral-300);border-radius:0;background:var(--ew-bg);font-family:inherit;font-size:13px;font-weight:600;padding:8px 12px;cursor:pointer" style-hover="background:var(--ew-neutral-100)">Edit</button>
               <button onClick="{{ r.toggle }}" style="{{ r.toggleStyle }}">{{ r.toggleLabel }}</button>
             </div>
@@ -143,7 +146,7 @@
     </sc-if>
 
     <sc-if value="{{ onEditor }}" hint-placeholder-val="{{ false }}">
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:22px;margin-top:24px;align-items:start">
+      <div class="ew-org-editor-layout">
 
         <div style="background:var(--ew-bg);border:1px solid var(--ew-neutral-200);border-radius:0;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,0.04)">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 22px;border-bottom:1px solid var(--ew-neutral-200)">
@@ -218,7 +221,7 @@
                   <span>OPTION</span><span>WHAT IT MEANS</span><span></span>
                 </div>
                 <sc-for list="{{ optionRows }}" as="t" hint-placeholder-count="2">
-                  <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--ew-neutral-200)">
+                  <div class="ew-org-option-grid" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--ew-neutral-200)">
                     <input class="ew-input" value="{{ t.name }}" onChange="{{ t.onName }}" placeholder="e.g. Attending" aria-label="Option name">
                     <input class="ew-input" value="{{ t.note }}" onChange="{{ t.onNote }}" placeholder="e.g. Full access to the grounds" aria-label="What this option means">
                     <button onClick="{{ t.remove }}" class="ew-btn ew-btn-ghost" aria-label="{{ t.removeLabel }}" style="{{ t.removeStyle }}">Remove</button>
