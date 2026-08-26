@@ -2,12 +2,12 @@
 // Dispatches a bubbling 'venue-select' CustomEvent; call setSelected(name) to sync from outside.
 (function () {
   const VENUES = [
-    { n: 1, name: 'Great Hall', lat: 6.67310, lng: -1.57130 },
-    { n: 2, name: 'Paa Joe Stadium', lat: 6.67960, lng: -1.57230 },
-    { n: 3, name: 'College of Science Auditorium', lat: 6.67580, lng: -1.56850 },
-    { n: 4, name: 'Prempeh II Library', lat: 6.67450, lng: -1.57010 },
-    { n: 5, name: 'KNUST Interdenominational Church', lat: 6.68080, lng: -1.57390 },
-    { n: 6, name: 'KNUST Campus', lat: 6.67160, lng: -1.57450 }
+    { n: 1, name: 'Great Hall', lat: 6.67475, lng: -1.57220, dir: 'right', stem: 24 },
+    { n: 2, name: 'Paa Joe Stadium', lat: 6.67780, lng: -1.56950, dir: 'right', stem: 28 },
+    { n: 3, name: 'College of Science Auditorium', lat: 6.67350, lng: -1.56650, dir: 'right', stem: 26 },
+    { n: 4, name: 'Prempeh II Library', lat: 6.67510, lng: -1.57180, dir: 'left', stem: 34 },
+    { n: 5, name: 'KNUST Interdenominational Church', lat: 6.68508, lng: -1.57270, dir: 'right', stem: 28 },
+    { n: 6, name: 'KNUST Campus', lat: 6.67644, lng: -1.57343, dir: 'left', stem: 24 }
   ];
 
   const icon = (n, on) => L.divIcon({
@@ -39,6 +39,16 @@
     const venueName = v.name || '';
     const label = venueName.replace('KNUST ', '');
     const bar = d && d.cat ? (CAT_VAR[d.cat] || 'var(--ew-accent, #1a3ee8)') : (d ? 'var(--ew-accent, #1a3ee8)' : 'var(--ew-neutral-400, #9aa0aa)');
+    const isLeft = v.dir === 'left';
+    const stemH = v.stem || 26;
+    const flagPos = isLeft ? `right:0;bottom:${stemH}px` : `left:0;bottom:${stemH}px`;
+    const flagContent = isLeft
+      ? `<span style="${FONT}font-size:11px;font-weight:600;padding:3px 0 3px 7px;color:${on ? 'var(--ew-bg, #fff)' : 'var(--ew-text-label, #4b5160)'}">${label}</span>` +
+        `<span style="${FONT}font-size:11px;font-weight:800;padding:3px 6px;color:${on ? 'var(--ew-bg, #fff)' : 'var(--ew-ink, #101215)'}">${v.n}</span>` +
+        `<span style="width:5px;flex-shrink:0;background:${bar}"></span>`
+      : `<span style="width:5px;flex-shrink:0;background:${bar}"></span>` +
+        `<span style="${FONT}font-size:11px;font-weight:800;padding:3px 6px;color:${on ? 'var(--ew-bg, #fff)' : 'var(--ew-ink, #101215)'}">${v.n}</span>` +
+        `<span style="${FONT}font-size:11px;font-weight:600;padding:3px 7px 3px 0;color:${on ? 'var(--ew-bg, #fff)' : 'var(--ew-text-label, #4b5160)'}">${label}</span>`;
 
     return L.divIcon({
       className: '',
@@ -46,15 +56,11 @@
       iconAnchor: [0, 0],
       html:
         '<span style="position:absolute;left:0;bottom:0;display:block">' +
-          '<span style="position:absolute;left:0;bottom:0;width:2px;height:26px;background:var(--ew-ink, #101215)"></span>' +
-          '<span style="position:absolute;left:0;bottom:26px;display:flex;align-items:stretch;' +
-            'border:2px solid var(--ew-rule-color, #101215);background:' + (on ? 'var(--ew-ink, #101215)' : 'var(--ew-bg, #fff)') + ';white-space:nowrap;' +
-            'box-shadow:0 2px 8px rgba(0,0,0,' + (on ? '0.35' : '0.15') + ')">' +
-            '<span style="width:5px;flex-shrink:0;background:' + bar + '"></span>' +
-            '<span style="' + FONT + 'font-size:11px;font-weight:800;padding:3px 6px;color:' + (on ? 'var(--ew-bg, #fff)' : 'var(--ew-ink, #101215)') + '">' +
-              v.n + '</span>' +
-            '<span style="' + FONT + 'font-size:11px;font-weight:600;padding:3px 7px 3px 0;color:' +
-              (on ? 'var(--ew-bg, #fff)' : 'var(--ew-text-label, #4b5160)') + '">' + label + '</span>' +
+          `<span style="position:absolute;left:0;bottom:0;width:2px;height:${stemH}px;background:var(--ew-ink, #101215)"></span>` +
+          `<span style="position:absolute;${flagPos};display:flex;align-items:stretch;` +
+            `border:2px solid var(--ew-rule-color, #101215);background:${on ? 'var(--ew-ink, #101215)' : 'var(--ew-bg, #fff)'};white-space:nowrap;` +
+            `box-shadow:0 2px 8px rgba(0,0,0,${on ? '0.35' : '0.15'})">` +
+            flagContent +
           '</span>' +
         '</span>'
     });
@@ -107,7 +113,7 @@
             bubbles: true, composed: true, detail: { name: v.name }
           }));
         });
-        this._markers[v.name] = { marker: m, n: v.n, lat: v.lat, lng: v.lng };
+        this._markers[v.name] = { marker: m, n: v.n, lat: v.lat, lng: v.lng, dir: v.dir, stem: v.stem };
       });
 
       this._map = map;
@@ -146,7 +152,7 @@
       Object.keys(this._markers).forEach(k => {
         const e = this._markers[k];
         const d = this._data[k];
-        const v = { n: e.n, name: k };
+        const v = { n: e.n, name: k, dir: e.dir, stem: e.stem };
         e.marker.setIcon(callout(v, k === this._selected, d));
         const text = this._describe({ name: k }, d);
         e.marker.setTooltipContent(text);
@@ -158,7 +164,7 @@
       this._selected = name;
       Object.keys(this._markers).forEach(k => {
         const e = this._markers[k];
-        e.marker.setIcon(callout({ n: e.n, name: k }, k === name, this._data[k]));
+        e.marker.setIcon(callout({ n: e.n, name: k, dir: e.dir, stem: e.stem }, k === name, this._data[k]));
       });
       const sel = name && this._markers[name];
       if (sel && this._map) this._map.flyTo([sel.lat, sel.lng], 16, { duration: 0.6 });
