@@ -38,7 +38,7 @@
   const callout = (v, on, d) => {
     const venueName = v.name || '';
     const label = venueName.replace('KNUST ', '');
-    const bar = d && d.cat ? (CAT_VAR[d.cat] || INK) : (d ? INK : '#9aa0aa');
+    const bar = d && d.cat ? (CAT_VAR[d.cat] || 'var(--ew-accent, #1a3ee8)') : (d ? 'var(--ew-accent, #1a3ee8)' : 'var(--ew-neutral-400, #9aa0aa)');
 
     return L.divIcon({
       className: '',
@@ -46,15 +46,15 @@
       iconAnchor: [0, 0],
       html:
         '<span style="position:absolute;left:0;bottom:0;display:block">' +
-          '<span style="position:absolute;left:0;bottom:0;width:2px;height:26px;background:' + INK + '"></span>' +
+          '<span style="position:absolute;left:0;bottom:0;width:2px;height:26px;background:var(--ew-ink, #101215)"></span>' +
           '<span style="position:absolute;left:0;bottom:26px;display:flex;align-items:stretch;' +
-            'border:2px solid ' + INK + ';background:' + (on ? INK : '#fff') + ';white-space:nowrap;' +
-            'box-shadow:0 2px 8px rgba(0,0,0,' + (on ? '0.28' : '0.12') + ')">' +
+            'border:2px solid var(--ew-rule-color, #101215);background:' + (on ? 'var(--ew-ink, #101215)' : 'var(--ew-bg, #fff)') + ';white-space:nowrap;' +
+            'box-shadow:0 2px 8px rgba(0,0,0,' + (on ? '0.35' : '0.15') + ')">' +
             '<span style="width:5px;flex-shrink:0;background:' + bar + '"></span>' +
-            '<span style="' + FONT + 'font-size:11px;font-weight:800;padding:3px 6px;color:' + (on ? '#fff' : INK) + '">' +
+            '<span style="' + FONT + 'font-size:11px;font-weight:800;padding:3px 6px;color:' + (on ? 'var(--ew-bg, #fff)' : 'var(--ew-ink, #101215)') + '">' +
               v.n + '</span>' +
             '<span style="' + FONT + 'font-size:11px;font-weight:600;padding:3px 7px 3px 0;color:' +
-              (on ? '#fff' : '#4b5160') + '">' + label + '</span>' +
+              (on ? 'var(--ew-bg, #fff)' : 'var(--ew-text-label, #4b5160)') + '">' + label + '</span>' +
           '</span>' +
         '</span>'
     });
@@ -76,6 +76,9 @@
         this._build();
       };
       wait();
+
+      this._themeListener = () => this._refresh();
+      window.addEventListener('theme-change', this._themeListener);
     }
 
     _build() {
@@ -121,6 +124,7 @@
 
     disconnectedCallback() {
       if (this._ro) { this._ro.disconnect(); this._ro = null; }
+      if (this._themeListener) { window.removeEventListener('theme-change', this._themeListener); this._themeListener = null; }
     }
 
     // What is on at each venue, keyed by venue name:

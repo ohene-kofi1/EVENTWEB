@@ -15,9 +15,10 @@
    ============================================================ */
 
 :root {
-  /* --- ground + ink ------------------------------------------------ */
+  /* --- ground + ink (Light Mode Default) ---------------------------- */
   --ew-bg: #ffffff;
   --ew-bg-sunken: #f7f8fa;
+  --ew-bg-surface: #ffffff;
   --ew-ink: #101215;
   --ew-ink-strong: #000000;
 
@@ -94,6 +95,60 @@
   --ew-ease: cubic-bezier(0.2, 0, 0, 1);
   --ew-dur-fast: 120ms;
   --ew-dur: 200ms;
+}
+
+/* ============================================================
+   DARK MODE TOKEN OVERRIDES
+   Rich, high-contrast palette preserving all accessibility & hierarchy
+   ============================================================ */
+
+:root[data-theme="dark"],
+[data-theme="dark"] {
+  --ew-bg: #090a0f;
+  --ew-bg-sunken: #10131a;
+  --ew-bg-surface: #141824;
+  --ew-ink: #f2f4f8;
+  --ew-ink-strong: #ffffff;
+
+  --ew-neutral-100: #121622;
+  --ew-neutral-200: #1c2234;
+  --ew-neutral-300: #29324a;
+  --ew-neutral-400: #495675;
+  --ew-neutral-500: #7181a4;
+  --ew-neutral-600: #9aa7c4;
+  --ew-neutral-700: #c2cde2;
+  --ew-neutral-800: #e2e8f5;
+  --ew-neutral-900: #f7f9fd;
+
+  --ew-accent-100: #15224e;
+  --ew-accent-200: #1c337c;
+  --ew-accent-300: #264bb5;
+  --ew-accent-400: #4971f7;
+  --ew-accent: #3d68ff;
+  --ew-accent-500: #3d68ff;
+  --ew-accent-600: #6688ff;
+  --ew-accent-700: #94adff;
+  --ew-accent-800: #c5d4ff;
+  --ew-accent-900: #e6edff;
+
+  --ew-text: #f0f3f8;
+  --ew-text-muted: #9aa7c4;
+  --ew-text-label: #b8c4dc;
+  --ew-text-on-dark: #ffffff;
+  --ew-text-muted-on-dark: #9aa7c4;
+
+  --ew-dark: #050608;
+  --ew-dark-raised: #0b0e14;
+  --ew-dark-line: #171b26;
+
+  --ew-rule-color: #f2f4f8;
+  --ew-hairline: 1px solid #1c2234;
+
+  --ew-cat-academic: #4971f7;
+  --ew-cat-social: #f24840;
+  --ew-cat-sports: #14b866;
+  --ew-cat-religious: #9c67e8;
+  --ew-cat-business: #d99318;
 }
 
 /* ============================================================
@@ -176,7 +231,7 @@ img.grayscale { filter: grayscale(1) contrast(1.04); }
 
 .ew-card {
   background: var(--ew-bg);
-  border: var(--ew-rule) solid var(--ew-ink);
+  border: var(--ew-rule) solid var(--ew-rule-color);
   border-radius: var(--ew-radius);
   display: flex;
   flex-direction: column;
@@ -189,7 +244,7 @@ img.grayscale { filter: grayscale(1) contrast(1.04); }
 .ew-card-meta { font-size: var(--ew-fs-small); color: var(--ew-text-muted); line-height: 1.5; }
 
 /* ============================================================
-   BUTTONS
+   BUTTONS & THEME TOGGLE
    Modernist sets button labels flush left, never centered.
    Every control clears the 44px touch target.
    ============================================================ */
@@ -218,10 +273,10 @@ img.grayscale { filter: grayscale(1) contrast(1.04); }
 .ew-btn-primary:hover { background: var(--ew-accent-600); border-color: var(--ew-accent-600); color: #fff; }
 .ew-btn-primary:active { background: var(--ew-accent-700); border-color: var(--ew-accent-700); }
 
-.ew-btn-ink { background: var(--ew-ink); color: #fff; border-color: var(--ew-ink); }
-.ew-btn-ink:hover { background: var(--ew-neutral-800); border-color: var(--ew-neutral-800); color: #fff; }
+.ew-btn-ink { background: var(--ew-ink); color: var(--ew-bg); border-color: var(--ew-ink); }
+.ew-btn-ink:hover { background: var(--ew-neutral-800); border-color: var(--ew-neutral-800); color: var(--ew-bg); }
 
-.ew-btn-secondary { background: transparent; color: var(--ew-ink); border-color: var(--ew-ink); }
+.ew-btn-secondary { background: transparent; color: var(--ew-ink); border-color: var(--ew-rule-color); }
 .ew-btn-secondary:hover { background: var(--ew-accent-100); border-color: var(--ew-accent); color: var(--ew-accent-700); }
 
 .ew-btn-ghost { background: transparent; color: var(--ew-text-muted); border-color: transparent; }
@@ -239,13 +294,66 @@ img.grayscale { filter: grayscale(1) contrast(1.04); }
   width: 44px;
   height: 44px;
   padding: 0;
-  border: var(--ew-rule) solid var(--ew-ink);
+  border: var(--ew-rule) solid var(--ew-rule-color);
   border-radius: var(--ew-radius);
   background: var(--ew-bg);
   color: var(--ew-ink);
   cursor: pointer;
+  transition: background var(--ew-dur-fast) var(--ew-ease),
+              border-color var(--ew-dur-fast) var(--ew-ease),
+              color var(--ew-dur-fast) var(--ew-ease);
 }
 .ew-btn-icon:hover { background: var(--ew-accent-100); border-color: var(--ew-accent); color: var(--ew-accent-700); }
+
+/* Theme toggle switch button */
+.ew-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: var(--ew-rule) solid var(--ew-rule-color);
+  border-radius: var(--ew-radius);
+  background: var(--ew-bg);
+  color: var(--ew-ink);
+  cursor: pointer;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: background var(--ew-dur-fast) var(--ew-ease),
+              border-color var(--ew-dur-fast) var(--ew-ease),
+              color var(--ew-dur-fast) var(--ew-ease),
+              transform var(--ew-dur-fast) var(--ew-ease);
+}
+
+.ew-theme-toggle:hover {
+  background: var(--ew-neutral-100);
+  border-color: var(--ew-accent);
+  color: var(--ew-accent);
+}
+
+.ew-theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.ew-theme-toggle .ew-sun-icon {
+  display: none;
+}
+
+.ew-theme-toggle .ew-moon-icon {
+  display: block;
+}
+
+:root[data-theme="dark"] .ew-theme-toggle .ew-sun-icon,
+[data-theme="dark"] .ew-theme-toggle .ew-sun-icon {
+  display: block;
+}
+
+:root[data-theme="dark"] .ew-theme-toggle .ew-moon-icon,
+[data-theme="dark"] .ew-theme-toggle .ew-moon-icon {
+  display: none;
+}
 
 /* ============================================================
    FILTER CHIPS
@@ -284,9 +392,9 @@ img.grayscale { filter: grayscale(1) contrast(1.04); }
 .ew-chip[aria-pressed="true"] {
   background: var(--ew-ink);
   border-color: var(--ew-ink);
-  color: #fff;
+  color: var(--ew-bg);
 }
-.ew-chip[aria-pressed="true"]:hover { background: var(--ew-neutral-800); border-color: var(--ew-neutral-800); }
+.ew-chip[aria-pressed="true"]:hover { background: var(--ew-neutral-800); border-color: var(--ew-neutral-800); color: var(--ew-bg); }
 
 /* The category dot is decorative; the label beside it carries the meaning. */
 .ew-chip-dot {
@@ -313,9 +421,11 @@ img.grayscale { filter: grayscale(1) contrast(1.04); }
   white-space: nowrap;
 }
 .ew-tag-free { background: var(--ew-accent-100); color: var(--ew-accent-700); }
-.ew-tag-ink { background: var(--ew-ink); color: #fff; }
+.ew-tag-ink { background: var(--ew-ink); color: var(--ew-bg); }
 .ew-tag-outline { border: 1px solid var(--ew-neutral-300); color: var(--ew-text-muted); }
 .ew-tag-soon { background: #fdecea; color: #8c1d18; }
+:root[data-theme="dark"] .ew-tag-soon,
+[data-theme="dark"] .ew-tag-soon { background: rgba(242,72,64,0.18); color: #ff7b75; }
 
 /* ============================================================
    FORMS
@@ -440,26 +550,111 @@ img.grayscale { filter: grayscale(1) contrast(1.04); }
 
 /* ============================================================
    MAP
+   Leaflet creates high internal z-indexes (up to 1000). To prevent
+   zoom controls and tiles from overlapping the sticky navbar when
+   scrolling up, the entire map frame and knust-map element enforce
+   isolated stacking contexts at z-index 1.
    ============================================================ */
 
 .ew-map-frame {
-  border: var(--ew-rule) solid var(--ew-ink);
+  position: relative;
+  z-index: 1 !important;
+  isolation: isolate;
+  border: var(--ew-rule) solid var(--ew-rule-color);
   border-radius: var(--ew-radius);
   overflow: hidden;
   min-height: 560px;
   background: var(--ew-neutral-100);
 }
 
-/* The map element sizes itself from CSS, not from inline styles set in
-   connectedCallback — the design-doc runtime re-renders and drops those,
-   which left Leaflet measuring a 0x0 box and throwing its controls to the
-   page origin. A stylesheet rule survives every re-render. */
 knust-map {
   display: block;
   position: relative;
   width: 100%;
   height: 560px;
   min-height: 560px;
+  z-index: 1 !important;
+  isolation: isolate;
+}
+
+.leaflet-container {
+  position: relative;
+  z-index: 1 !important;
+  isolation: isolate;
+  background: var(--ew-neutral-100) !important;
+  font-family: var(--ew-font) !important;
+}
+
+/* Constrain all Leaflet internal layers so they cannot breach the map frame */
+.leaflet-pane,
+.leaflet-tile-pane,
+.leaflet-overlay-pane,
+.leaflet-shadow-pane,
+.leaflet-marker-pane,
+.leaflet-tooltip-pane,
+.leaflet-popup-pane,
+.leaflet-map-pane {
+  z-index: 2 !important;
+}
+
+.leaflet-top,
+.leaflet-bottom,
+.leaflet-control {
+  z-index: 3 !important;
+}
+
+/* Custom themed zoom controls */
+.leaflet-control-zoom {
+  border: var(--ew-rule) solid var(--ew-rule-color) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden;
+  margin: 14px !important;
+}
+
+.leaflet-control-zoom a {
+  background: var(--ew-bg) !important;
+  color: var(--ew-ink) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--ew-neutral-200) !important;
+  border-radius: 0 !important;
+  width: 34px !important;
+  height: 34px !important;
+  line-height: 34px !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  transition: background var(--ew-dur-fast) var(--ew-ease), color var(--ew-dur-fast) var(--ew-ease);
+}
+
+.leaflet-control-zoom a:last-child {
+  border-bottom: none !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--ew-neutral-100) !important;
+  color: var(--ew-accent) !important;
+}
+
+.leaflet-control-attribution {
+  background: var(--ew-bg) !important;
+  color: var(--ew-text-muted) !important;
+  font-size: 11px !important;
+  opacity: 0.85;
+}
+
+.leaflet-control-attribution a {
+  color: var(--ew-accent) !important;
+}
+
+/* Dark mode map tile filters for a sleek nighttime campus cartography */
+:root[data-theme="dark"] .leaflet-tile-pane,
+[data-theme="dark"] .leaflet-tile-pane {
+  filter: brightness(0.65) invert(1) contrast(2.6) hue-rotate(195deg) saturate(0.38) brightness(0.9);
+}
+
+:root[data-theme="dark"] .leaflet-container,
+[data-theme="dark"] .leaflet-container {
+  background: #11141d !important;
 }
 
 @media (max-width: 720px) {
@@ -482,6 +677,7 @@ knust-map {
   color: var(--ew-text);
   text-align: left;
   cursor: pointer;
+  transition: background var(--ew-dur-fast) var(--ew-ease);
 }
 .ew-venue:hover { background: var(--ew-neutral-100); }
 .ew-venue[aria-current="true"] { background: var(--ew-accent-100); color: var(--ew-accent-700); font-weight: 700; }
@@ -491,13 +687,13 @@ knust-map {
   justify-content: center;
   width: 30px; height: 30px;
   flex: 0 0 auto;
-  border: var(--ew-rule) solid var(--ew-ink);
+  border: var(--ew-rule) solid var(--ew-rule-color);
   background: var(--ew-ink);
-  color: #fff;
+  color: var(--ew-bg);
   font-size: var(--ew-fs-micro);
   font-weight: 700;
 }
-.ew-venue[aria-current="true"] .ew-venue-num { background: var(--ew-accent); border-color: var(--ew-accent); }
+.ew-venue[aria-current="true"] .ew-venue-num { background: var(--ew-accent); border-color: var(--ew-accent); color: #fff; }
 
 /* ============================================================
    CAROUSEL DOTS
