@@ -1,19 +1,18 @@
 """
-Generates a publication-quality academic Technical Report PDF for EVENTWEB
+Generates a clean, classic, black-and-white academic technical report PDF for EVENTWEB.
+No colored boxes, no dark blocks, no ASCII art—clean academic typography and structure.
 """
-import os
 from reportlab.lib.pagesizes import letter
-from reportlab.lib.units import inch
 from reportlab.lib import colors
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, HRFlowable
 )
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 
-class NumberedCanvas(canvas.Canvas):
+class AcademicNumberedCanvas(canvas.Canvas):
     def __init__(self, *args, **kwargs):
-        super(NumberedCanvas, self).__init__(*args, **kwargs)
+        super(AcademicNumberedCanvas, self).__init__(*args, **kwargs)
         self._saved_page_states = []
 
     def showPage(self):
@@ -24,33 +23,33 @@ class NumberedCanvas(canvas.Canvas):
         num_pages = len(self._saved_page_states)
         for state in self._saved_page_states:
             self.__dict__.update(state)
-            self.draw_header_footer(num_pages)
+            self.draw_page_decorations(num_pages)
             canvas.Canvas.showPage(self)
         canvas.Canvas.save(self)
 
-    def draw_header_footer(self, page_count):
+    def draw_page_decorations(self, page_count):
         self.saveState()
-        self.setFont("Helvetica", 8)
-        self.setFillColor(colors.HexColor("#6c717c"))
+        self.setFont("Times-Roman", 9)
+        self.setFillColor(colors.black)
         
         # Header (pages > 1)
         if self._pageNumber > 1:
-            self.drawString(54, letter[1] - 36, "EVENTWEB — Engineering Technical Report · KNUST")
-            self.setStrokeColor(colors.HexColor("#e0e2e8"))
+            self.drawString(54, letter[1] - 36, "EVENTWEB: Campus Discovery & Ticketing Infrastructure — KNUST")
+            self.setStrokeColor(colors.black)
             self.setLineWidth(0.5)
             self.line(54, letter[1] - 42, letter[0] - 54, letter[1] - 42)
             
         # Footer
         page_str = f"Page {self._pageNumber} of {page_count}"
-        self.drawRightString(letter[0] - 54, 32, page_str)
-        self.drawString(54, 32, "CONFIDENTIAL & PROPRIETARY — ACADEMIC DEFENSE")
-        self.setStrokeColor(colors.HexColor("#e0e2e8"))
+        self.drawRightString(letter[0] - 54, 34, page_str)
+        self.drawString(54, 34, "Department of Computer Engineering · Academic Project Report")
+        self.setStrokeColor(colors.black)
         self.setLineWidth(0.5)
         self.line(54, 44, letter[0] - 54, 44)
         
         self.restoreState()
 
-def build_pdf():
+def build_clean_pdf():
     pdf_filename = "TECHNICAL_REPORT.pdf"
     doc = SimpleDocTemplate(
         pdf_filename,
@@ -63,256 +62,171 @@ def build_pdf():
 
     styles = getSampleStyleSheet()
     
-    # Custom Palette
-    c_primary = colors.HexColor("#1a3ee8")
-    c_ink = colors.HexColor("#101215")
-    c_muted = colors.HexColor("#6c717c")
-    c_bg_sunken = colors.HexColor("#f7f8fa")
-    c_border = colors.HexColor("#e0e2e8")
-    c_accent_bg = colors.HexColor("#eef1ff")
-    
-    # Typography Styles
-    title_style = ParagraphStyle(
-        'DocTitle',
-        fontName='Helvetica-Bold',
-        fontSize=22,
-        leading=26,
-        textColor=c_ink,
-        spaceAfter=6
+    # Clean Academic Typography (Times-Roman / Helvetica)
+    doc_title_style = ParagraphStyle(
+        'AcademicDocTitle',
+        fontName='Times-Bold',
+        fontSize=18,
+        leading=22,
+        textColor=colors.black,
+        alignment=1, # Centered
+        spaceAfter=8
     )
     
-    subtitle_style = ParagraphStyle(
-        'DocSubtitle',
-        fontName='Helvetica',
-        fontSize=12,
-        leading=16,
-        textColor=colors.HexColor("#4b5160"),
+    doc_subtitle_style = ParagraphStyle(
+        'AcademicDocSubtitle',
+        fontName='Times-Roman',
+        fontSize=11,
+        leading=15,
+        textColor=colors.black,
+        alignment=1, # Centered
         spaceAfter=14
     )
     
     h1_style = ParagraphStyle(
-        'H1',
-        fontName='Helvetica-Bold',
+        'AcademicH1',
+        fontName='Times-Bold',
         fontSize=13,
-        leading=17,
-        textColor=c_ink,
-        spaceBefore=16,
+        leading=16,
+        textColor=colors.black,
+        spaceBefore=14,
         spaceAfter=6,
         keepWithNext=True
     )
     
     h2_style = ParagraphStyle(
-        'H2',
-        fontName='Helvetica-Bold',
-        fontSize=10.5,
+        'AcademicH2',
+        fontName='Times-BoldItalic',
+        fontSize=11,
         leading=14,
-        textColor=c_primary,
-        spaceBefore=10,
+        textColor=colors.black,
+        spaceBefore=9,
         spaceAfter=4,
         keepWithNext=True
     )
     
     body_style = ParagraphStyle(
-        'Body',
-        fontName='Helvetica',
-        fontSize=9.5,
-        leading=13.5,
-        textColor=colors.HexColor("#2b303b"),
-        spaceAfter=6
+        'AcademicBody',
+        fontName='Times-Roman',
+        fontSize=10,
+        leading=14.5,
+        textColor=colors.black,
+        spaceAfter=6,
+        alignment=4 # Justified
     )
     
     bullet_style = ParagraphStyle(
-        'Bullet',
+        'AcademicBullet',
         parent=body_style,
-        leftIndent=14,
-        firstLineIndent=-10,
-        spaceAfter=3
+        leftIndent=18,
+        firstLineIndent=-12,
+        spaceAfter=4
     )
     
-    code_style = ParagraphStyle(
-        'CodeStyle',
-        fontName='Courier',
-        fontSize=7.5,
-        leading=9.5,
-        textColor=colors.HexColor("#f2f4f8")
-    )
-    
-    badge_style = ParagraphStyle(
-        'Badge',
-        fontName='Helvetica-Bold',
-        fontSize=8,
-        leading=10,
-        textColor=colors.white
+    meta_style = ParagraphStyle(
+        'AcademicMeta',
+        fontName='Times-Roman',
+        fontSize=9.5,
+        leading=13,
+        textColor=colors.black
     )
 
     story = []
 
-    # Badge + Header
-    badge_p = Paragraph("<b>ENGINEERING TECHNICAL REPORT</b>", badge_style)
-    badge_table = Table([[badge_p]], colWidths=[180])
-    badge_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, -1), c_primary),
-        ('PADDING', (0, 0), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
-        ('TOPPADDING', (0, 0), (-1, -1), 4),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-    ]))
-    story.append(badge_table)
-    story.append(Spacer(1, 10))
+    # Title & Metadata
+    story.append(Paragraph("EVENTWEB: A UNIFIED CAMPUS EVENT DISCOVERY, GIS MAPPING, AND TICKETING SYSTEM FOR KNUST", doc_title_style))
+    story.append(Paragraph("Technical Report and Architectural Specification<br/>Presented to the Department of Computer Engineering", doc_subtitle_style))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.black, spaceBefore=0, spaceAfter=10))
 
-    story.append(Paragraph("EVENTWEB: A Unified Campus Event Discovery, GIS Mapping, and Ticketing Infrastructure", title_style))
-    story.append(Paragraph("Architectural Design, Distributed Cloud Backend, Spatial GIS Integration, and Transactional Notification Pipeline", subtitle_style))
-    story.append(HRFlowable(width="100%", thickness=1.5, color=c_ink, spaceBefore=0, spaceAfter=10))
-
-    # Meta Table
-    meta_data = [
-        [
-            Paragraph("<b>Target Institution:</b><br/>KNUST, Kumasi, Ghana", body_style),
-            Paragraph("<b>Domain:</b><br/>Web GIS & Cloud Software Eng.", body_style),
-            Paragraph("<b>Backend & Auth:</b><br/>Supabase (PostgreSQL + RLS)", body_style),
-            Paragraph("<b>Email Dispatch:</b><br/>Resend (Edge Functions)", body_style)
-        ]
+    meta_content = [
+        [Paragraph("<b>Author / Candidate:</b> Project Engineering Team", meta_style), Paragraph("<b>Target Institution:</b> KNUST, Kumasi, Ghana", meta_style)],
+        [Paragraph("<b>Academic Term:</b> 2025 / 2026 Academic Year", meta_style), Paragraph("<b>Core Technologies:</b> HTML5, CSS3, Supabase, Resend", meta_style)]
     ]
-    meta_table = Table(meta_data, colWidths=[126, 126, 126, 126])
-    meta_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, -1), c_bg_sunken),
-        ('BORDER', (0, 0), (-1, -1), 0.5, c_border),
-        ('PADDING', (0, 0), (-1, -1), 6),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    t_meta = Table(meta_content, colWidths=[250, 254])
+    t_meta.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('PADDING', (0, 0), (-1, -1), 2),
     ]))
-    story.append(meta_table)
-    story.append(Spacer(1, 12))
+    story.append(t_meta)
+    story.append(HRFlowable(width="100%", thickness=0.5, color=colors.black, spaceBefore=8, spaceAfter=12))
 
     # Section 1
-    story.append(Paragraph("1. Executive Summary & Problem Statement", h1_style))
+    story.append(Paragraph("1. Introduction and Background", h1_style))
     story.append(Paragraph(
-        "Campus life at Kwame Nkrumah University of Science and Technology (KNUST) features hundreds of student-driven "
-        "and faculty-organized activities per academic semester—spanning academic symposiums, society dinners, sports "
-        "derbies, religious retreats, and entrepreneurship bootcamps. Historically, publicity has been scattered across "
-        "ephemeral WhatsApp status updates, unstructured broadcast groups, and physical paper posters pasted over campus notice boards. "
-        "This fragmentation leads to information decay, low turnouts, double-booked halls, and no centralized check-in records.",
+        "At Kwame Nkrumah University of Science and Technology (KNUST), campus life is driven by an active student body and numerous faculty associations organizing hundreds of extracurricular, academic, professional, and social events each semester. These range from engineering conferences, academic symposiums, and software hackathons to society masked dinners, sports tournaments, night markets, and religious fellowships.",
         body_style
     ))
     story.append(Paragraph(
-        "<b>EVENTWEB</b> unifies campus events into a single digital platform: a live-updating discovery board categorized by "
-        "five distinct activity tracks (Academic, Social, Sports, Religious, Business), an interactive campus GIS cartography map, "
-        "an automated pass generation engine with door verification codes (<code>EW-XXXX-XX</code>), and a verified society organizer console.",
+        "Despite the high volume of high-impact campus events, publicity and registration mechanisms across the university remain heavily fragmented. Organizers rely on physical paper flyers pasted over public notice boards, unindexed broadcast messages on WhatsApp group chats, and short-lived social media stories. This lack of a structured digital channel leads to high information decay, poor attendance estimation, venue confusion among freshmen and non-resident students, and severe logistical bottlenecks during door check-ins.",
         body_style
     ))
 
-    # Section 2: Architecture
-    story.append(Paragraph("2. System Architecture & Component Model", h1_style))
+    # Section 2
+    story.append(Paragraph("2. Problem Statement and Objectives", h1_style))
     story.append(Paragraph(
-        "EVENTWEB employs a modern decoupled architecture balancing immediate client rendering with resilient cloud persistence and serverless communication.",
+        "The primary challenge addressed by this project is the absence of a reliable, centralized, and spatially aware event coordination platform for the university. Specific issues include:",
         body_style
     ))
-    
-    arch_ascii = (
-        "+-------------------------------------------------------------------------+\n"
-        "|                           EVENTWEB PLATFORM                             |\n"
-        "+------------------------------------+------------------------------------+\n"
-        "|         STUDENT CLIENT             |         ORGANIZER CONSOLE          |\n"
-        "| * 5s Auto-Rotating Poster Board    | * Verified Society Authentication  |\n"
-        "| * Category Filtering & Search      | * Flyer Upload (Supabase Storage)  |\n"
-        "| * Interactive KNUST GIS Map        | * Capacity & Tier Configuration    |\n"
-        "| * Instant Registration & Code Gen  | * Real-Time Attendee Tracking      |\n"
-        "+-----------------+------------------+-----------------+------------------+\n"
-        "                  |                                    |\n"
-        "                  v                                    v\n"
-        "+-------------------------------------------------------------------------+\n"
-        "|                       SUPABASE CLOUD INFRASTRUCTURE                     |\n"
-        "|  +----------------------+  +------------------+  +-------------------+  |\n"
-        "|  | PostgreSQL Database  |  | Supabase Auth    |  | Storage Buckets   |  |\n"
-        "|  | (RLS + Triggers)     |  | (JWT & Sessions) |  | (event-posters)   |  |\n"
-        "|  +----------+-----------+  +------------------+  +-------------------+  |\n"
-        "|             |                                                           |\n"
-        "|             v Database Webhook                                          |\n"
-        "|  +-------------------------------------------------------------------+  |\n"
-        "|  | Supabase Edge Function (Deno Runtime) + Resend Email API          |  |\n"
-        "|  | * Automated Ticket Email with Reference Code & Calendar Details   |  |\n"
-        "|  +-------------------------------------------------------------------+  |\n"
-        "+-------------------------------------------------------------------------+"
-    )
-    
-    arch_table = Table([[Paragraph(f"<pre>{arch_ascii}</pre>", code_style)]], colWidths=[504])
-    arch_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#0c0e12")),
-        ('PADDING', (0, 0), (-1, -1), 8),
-        ('BORDER', (0, 0), (-1, -1), 1, c_ink),
-    ]))
-    story.append(arch_table)
-    story.append(Spacer(1, 10))
+    story.append(Paragraph("• <b>Information Scattering:</b> Students frequently miss relevant developmental programs due to uncoordinated publicity channels.", bullet_style))
+    story.append(Paragraph("• <b>Geospatial Ambiguity:</b> Navigating diverse venue locations across campus—such as the Great Hall, Paa Joe Stadium, College of Science Auditorium, and Prempeh II Library—is challenging without integrated maps.", bullet_style))
+    story.append(Paragraph("• <b>Capacity and Roster Bottlenecks:</b> Student societies lack real-time registration caps and verified attendee rosters, causing hall overcrowding or unexpected empty seats.", bullet_style))
+    story.append(Paragraph(
+        "The primary objective of EVENTWEB is to design and implement an institutional-grade platform that unifies event discovery, provides spatial navigation on an interactive campus map, automates ticket reservation with unique verification codes, and provides verified societies with an administrative management dashboard.",
+        body_style
+    ))
 
-    # Section 3: Tech Stack
-    story.append(Paragraph("3. Technology Stack & Technical Justifications", h1_style))
+    # Section 3
+    story.append(Paragraph("3. System Architecture and Methodology", h1_style))
+    story.append(Paragraph(
+        "EVENTWEB is engineered following a decoupled, three-tier cloud software architecture consisting of a high-performance client frontend, a managed relational database layer, and a serverless notification engine.",
+        body_style
+    ))
+    story.append(Paragraph("• <b>Presentation Layer (Frontend):</b> Built using semantic HTML5, custom Modernist CSS tokens, and declarative component state logic. It features zero border-radius styling, precise 1px hairlines, an automated 5-second hero poster carousel with interaction-pause mechanics, and a Leaflet.js campus map.", bullet_style))
+    story.append(Paragraph("• <b>Data and Authentication Layer (Supabase):</b> Utilizes a managed PostgreSQL 15 database enforcing relational integrity, custom category ENUMs, JSONB attendance tiers, database trigger functions, and Row-Level Security (RLS) policies.", bullet_style))
+    story.append(Paragraph("• <b>Communication Layer (Resend & Edge Functions):</b> Serverless Deno functions triggered by database insertion webhooks to dispatch branded HTML ticket confirmations and calendar notices.", bullet_style))
+
+    # Section 4: Technology Stack Table
+    story.append(Paragraph("4. Technical Stack Justification", h1_style))
     stack_data = [
-        [Paragraph("<b>Subsystem</b>", body_style), Paragraph("<b>Technology</b>", body_style), Paragraph("<b>Engineering Rationale</b>", body_style)],
-        [Paragraph("<b>Frontend Core</b>", body_style), Paragraph("HTML5 / Vanilla JS", body_style), Paragraph("Eliminates virtual-DOM overhead, delivering instantaneous First Contentful Paint.", body_style)],
-        [Paragraph("<b>Design System</b>", body_style), Paragraph("Modernist CSS (1px rules)", body_style), Paragraph("Zero border-radius, clean 1px hairlines, and strict WCAG AA contrast compliance.", body_style)],
-        [Paragraph("<b>GIS Engine</b>", body_style), Paragraph("Leaflet.js + OSM Tiles", body_style), Paragraph("Client-side campus cartography with custom coordinate bounding boxes.", body_style)],
-        [Paragraph("<b>Database</b>", body_style), Paragraph("Supabase (PostgreSQL 15)", body_style), Paragraph("ACID transactions, custom ENUMs, JSONB tiers, and native Row-Level Security.", body_style)],
-        [Paragraph("<b>Auth & Storage</b>", body_style), Paragraph("Supabase Auth & Storage", body_style), Paragraph("JWT organizer sessions and CDN bucket storage for society flyers.", body_style)],
-        [Paragraph("<b>Email Delivery</b>", body_style), Paragraph("Resend + Edge Functions", body_style), Paragraph("Serverless execution for instant pass delivery and automated door reminders.", body_style)],
+        [Paragraph("<b>Component</b>", body_style), Paragraph("<b>Technology</b>", body_style), Paragraph("<b>Technical Justification</b>", body_style)],
+        [Paragraph("Frontend UI", body_style), Paragraph("Semantic HTML5 & Vanilla JS", body_style), Paragraph("Eliminates heavy framework bundle overhead; provides sub-second first contentful paint.", body_style)],
+        [Paragraph("Design System", body_style), Paragraph("Modernist CSS (1px rules)", body_style), Paragraph("Zero border-radius, clean hairline rules, and full WCAG AA contrast compliance.", body_style)],
+        [Paragraph("Spatial GIS", body_style), Paragraph("Leaflet.js + OSM Cartography", body_style), Paragraph("Lightweight client-side map rendering with accurate KNUST campus venue coordinates.", body_style)],
+        [Paragraph("Relational Database", body_style), Paragraph("Supabase (PostgreSQL 15)", body_style), Paragraph("ACID transaction guarantees, atomic capacity triggers, and native Row-Level Security.", body_style)],
+        [Paragraph("Authentication", body_style), Paragraph("Supabase Auth (JWT)", body_style), Paragraph("Role-based separation between public student attendees and verified society organizers.", body_style)],
+        [Paragraph("Object Storage", body_style), Paragraph("Supabase Storage (`event-posters`)", body_style), Paragraph("CDN-backed image storage with secure authenticated write permissions.", body_style)],
+        [Paragraph("Email Dispatch", body_style), Paragraph("Resend API + Edge Functions", body_style), Paragraph("Serverless execution ensuring high deliverability without exposing private keys.", body_style)]
     ]
-    t_stack = Table(stack_data, colWidths=[100, 130, 274])
+    t_stack = Table(stack_data, colWidths=[95, 135, 274])
     t_stack.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), c_bg_sunken),
-        ('BORDER', (0, 0), (-1, -1), 0.5, c_border),
+        ('LINEABOVE', (0, 0), (-1, 0), 1, colors.black),
+        ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),
+        ('LINEBELOW', (0, -1), (-1, -1), 1, colors.black),
         ('PADDING', (0, 0), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
-        ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
     ]))
     story.append(t_stack)
     story.append(Spacer(1, 10))
 
     story.append(PageBreak())
 
-    # Section 4: Database Schema
-    story.append(Paragraph("4. Database Schema & Data Integrity", h1_style))
+    # Section 5: Database Engineering
+    story.append(Paragraph("5. Relational Database Design and Data Integrity", h1_style))
     story.append(Paragraph(
-        "The relational schema is normalized into three core entities: <code>organizers</code>, <code>events</code>, and <code>registrations</code>. "
-        "Row-Level Security (RLS) protects unauthorized modification, while a PostgreSQL trigger eliminates overbooking race conditions.",
+        "The relational database schema is normalized across three core tables to guarantee referential integrity and eliminate redundancy:",
         body_style
     ))
+    story.append(Paragraph("• <b>Organizers Table (`organizers`):</b> Stores society and faculty organizer profiles linked directly to Supabase Auth (`auth.users.id`). Fields include `org_name`, `org_type` (Society, Faculty, Club, Committee), `email`, and `is_verified`.", bullet_style))
+    story.append(Paragraph("• <b>Events Table (`events`):</b> Stores comprehensive event metadata including title, category ENUM (Academic, Social, Sports, Religious, Business), venue name, date, time, total capacity, registered count, poster image URL, and JSONB attendance options.", bullet_style))
+    story.append(Paragraph("• <b>Registrations Table (`registrations`):</b> Records individual student ticket reservations. Each row contains a foreign key reference to `events.id`, an optional reference to `user_id`, a unique door check-in reference code (`EW-XXXX-XX`), the selected tier name, and reminder opt-in status.", bullet_style))
 
-    er_ascii = (
-        " [ ORGANIZERS ]                1:N                 [ EVENTS ]\n"
-        " - id (UUID, PK, Auth) --------------------------> - id (UUID, PK)\n"
-        " - org_name (TEXT)                                - organizer_id (UUID, FK)\n"
-        " - org_type (TEXT)                                - title (TEXT)\n"
-        " - email (TEXT)                                   - category (ENUM)\n"
-        " - is_verified (BOOL)                             - venue (TEXT)\n"
-        "                                                  - date (DATE), time (TEXT)\n"
-        "                                                  - capacity, reg_count (INT)\n"
-        "                                                  - poster_url (TEXT)\n"
-        "                                                  - options (JSONB)\n"
-        "                                                  - status (ENUM)\n"
-        "                                                          |\n"
-        "                                                          | 1:N\n"
-        "                                                          v\n"
-        "                                                  [ REGISTRATIONS ]\n"
-        "                                                  - id (UUID, PK)\n"
-        "                                                  - event_id (UUID, FK)\n"
-        "                                                  - code (TEXT, Unique)\n"
-        "                                                  - attendee_name, email (TEXT)\n"
-        "                                                  - remind_opt_in (BOOL)"
-    )
-    er_table = Table([[Paragraph(f"<pre>{er_ascii}</pre>", code_style)]], colWidths=[504])
-    er_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#0c0e12")),
-        ('PADDING', (0, 0), (-1, -1), 6),
-        ('BORDER', (0, 0), (-1, -1), 1, c_ink),
-    ]))
-    story.append(er_table)
-    story.append(Spacer(1, 8))
-
-    story.append(Paragraph("4.1 Concurrency & Registration Counter Trigger", h2_style))
+    story.append(Paragraph("5.1 Atomic Concurrency Trigger for Capacity Management", h2_style))
     story.append(Paragraph(
-        "To ensure live registration counts remain atomic and immune to client tampering, a database trigger automatically "
-        "increments <code>reg_count</code> on the target event immediately upon successful registration insertion:",
+        "A critical vulnerability in event registration web applications is the race condition, where simultaneous attendee requests can lead to overbooking beyond hall limits. To prevent this, EVENTWEB implements an atomic PostgreSQL trigger function executing at the database level:",
         body_style
     ))
-    trig_sql = (
+    
+    trig_text = (
         "CREATE OR REPLACE FUNCTION public.handle_new_registration()\n"
         "RETURNS trigger AS $$\n"
         "BEGIN\n"
@@ -324,70 +238,69 @@ def build_pdf():
         "  AFTER INSERT ON public.registrations\n"
         "  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_registration();"
     )
-    trig_table = Table([[Paragraph(f"<pre>{trig_sql}</pre>", code_style)]], colWidths=[504])
-    trig_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#0c0e12")),
-        ('PADDING', (0, 0), (-1, -1), 6),
-        ('BORDER', (0, 0), (-1, -1), 1, c_ink),
+    t_trig = Table([[Paragraph(f"<font face='Courier' size='8'>{trig_text.replace(chr(10), '<br/>')}</font>", body_style)]], colWidths=[504])
+    t_trig.setStyle(TableStyle([
+        ('PADDING', (0, 0), (-1, -1), 4),
+        ('LINEABOVE', (0, 0), (-1, 0), 0.5, colors.black),
+        ('LINEBELOW', (0, -1), (-1, -1), 0.5, colors.black),
     ]))
-    story.append(trig_table)
-    story.append(Spacer(1, 10))
+    story.append(t_trig)
+    story.append(Spacer(1, 8))
 
-    # Section 5: GIS Mapping
-    story.append(Paragraph("5. Interactive GIS Campus Cartography", h1_style))
+    story.append(Paragraph("5.2 Security and Row-Level Policies (RLS)", h2_style))
     story.append(Paragraph(
-        "The spatial mapping module embeds KNUST campus coordinates into a custom Leaflet.js canvas, resolving venue locations accurately:",
-        body_style
-    ))
-    story.append(Paragraph("• <b>Great Hall:</b> <code>6.67475 N, -1.57220 W</code> (Central Assembly & Keynote Hall)", bullet_style))
-    story.append(Paragraph("• <b>Paa Joe Stadium:</b> <code>6.67780 N, -1.56950 W</code> (Athletics, Tournaments, Outdoor Fairs)", bullet_style))
-    story.append(Paragraph("• <b>College of Science Auditorium:</b> <code>6.67350 N, -1.56650 W</code> (Symposiums & Lectures)", bullet_style))
-    story.append(Paragraph("• <b>Prempeh II Library:</b> <code>6.67510 N, -1.57180 W</code> (Academic Workshops & Book Clubs)", bullet_style))
-    story.append(Paragraph("• <b>KNUST Interdenominational Church:</b> <code>6.68508 N, -1.57270 W</code> (Services & Fellowships)", bullet_style))
-    story.append(Paragraph("• <b>Brunei Sports Complex / Campus:</b> <code>6.67644 N, -1.57343 W</code> (Night Markets & Festivals)", bullet_style))
-    story.append(Paragraph(
-        "<b>Architectural Drafting Callouts:</b> Markers feature a 2px coordinate stem with an interactive flag displaying "
-        "venue numbers and category color bars. Clicking a pin highlights events in the list; selecting a list venue pans the map smoothly.",
+        "Row-Level Security is strictly enabled on all tables. Public anonymous users have `SELECT` access only to published events and `INSERT` permissions to register. Organizers are restricted via `auth.uid() = organizer_id` so that they can only modify or view attendance logs for events they have published.",
         body_style
     ))
 
-    # Section 6: UI/UX & Autoplay State Machine
-    story.append(Paragraph("6. Front-End Interaction & Modernist Design Language", h1_style))
+    # Section 6: GIS Mapping
+    story.append(Paragraph("6. Geospatial Mapping and Campus Venue Coordinates", h1_style))
     story.append(Paragraph(
-        "• <b>5-Second Hero Autoplay:</b> The 3D poster stack rotates automatically every 5000ms. If the student clicks, drags, or browses "
-        "manually, the timer is cleared and restarts a fresh 5-second countdown from that moment.",
+        "To assist students in locating event venues across KNUST, EVENTWEB integrates a dedicated Leaflet GIS module mapped to calibrated campus coordinates:",
+        body_style
+    ))
+    story.append(Paragraph("• <b>Great Hall:</b> 6.67475° N, -1.57220° W (Main Ceremonial Hall and Matriculation/Congregation Auditorium)", bullet_style))
+    story.append(Paragraph("• <b>Paa Joe Stadium:</b> 6.67780° N, -1.56950° W (University Sports Grounds, Marathon Starts, Outdoor Fairs)", bullet_style))
+    story.append(Paragraph("• <b>College of Science Auditorium:</b> 6.67350° N, -1.56650° W (Academic Conferences, STEM Competitions)", bullet_style))
+    story.append(Paragraph("• <b>Prempeh II Library:</b> 6.67510° N, -1.57180° W (Central Academic Resource and Seminar Rooms)", bullet_style))
+    story.append(Paragraph("• <b>KNUST Interdenominational Church:</b> 6.68508° N, -1.57270° W (Religious Fellowships and Services)", bullet_style))
+    story.append(Paragraph("• <b>Central Campus / Brunei Complex:</b> 6.67644° N, -1.57343° W (Night Markets, Fusion Festivals)", bullet_style))
+    story.append(Paragraph(
+        "The mapping layer uses architectural drafting pins with category-coded color indicators. Selecting an event in the list smoothly pans the map viewport to that venue, while tapping a map marker instantly filters the event roster.",
+        body_style
+    ))
+
+    # Section 7: User Experience
+    story.append(Paragraph("7. User Interface and Interaction Engineering", h1_style))
+    story.append(Paragraph(
+        "• <b>5-Second Autoplay Rotation:</b> The homepage poster showcase automatically advances to the next flyer every 5000 milliseconds when idle. When the user manually clicks next/previous controls, carousel indicators, or drags a card, the timer resets and restarts a fresh 5-second countdown from that moment.",
         bullet_style
     ))
     story.append(Paragraph(
-        "• <b>1px Seamless Hairlines:</b> Replaced brutalist borders with refined 1px strokes (<code>--ew-rule: 1px</code>). "
-        "In dark mode, borders switch to <code>#29324a</code> to blend seamlessly against dark grounds.",
+        "• <b>Thin 1px Modernist Hairlines:</b> All interface components (cards, navbar, search input, chips, and modal sheets) utilize a clean 1px hairline rule (`--ew-rule: 1px`). In dark mode, borders shift to `#29324a` to seamlessly blend without harsh glare.",
         bullet_style
     ))
     story.append(Paragraph(
-        "• <b>Modal Isolation:</b> When an event registration sheet is opened, background poster rotation is paused to preserve user concentration.",
+        "• <b>Modal Focus Isolation:</b> Opening an event registration sheet automatically suspends background rotations to preserve user concentration while filling out details.",
         bullet_style
     ))
 
-    # Section 7: Resend Email Pipeline
-    story.append(Paragraph("7. Automated Transactional Pass Pipeline (Resend)", h1_style))
+    # Section 8: Resend Email
+    story.append(Paragraph("8. Transactional Pass and Reminder Pipeline (Resend)", h1_style))
     story.append(Paragraph(
-        "Upon registration insertion, Supabase triggers an Edge Function (Deno) that interfaces with Resend: "
-        "attendees receive a structured email pass containing their unique code (e.g. <code>EW-4471-KQ</code>), venue directions, "
-        "and Google Calendar integration. API credentials remain encrypted in Supabase environment secrets.",
+        "When a student registers, Supabase triggers a serverless Edge Function running on the Deno runtime. This function calls the Resend REST API to dispatch an immediate confirmation pass containing the event title, flyer thumbnail, society name, date, venue, and unique entry verification code (`EW-XXXX-XX`). API keys are securely stored in server environment variables and never exposed to client browsers.",
         body_style
     ))
 
-    # Section 8: Conclusion
-    story.append(Paragraph("8. Conclusion & Academic Defense Summary", h1_style))
+    # Section 9: Conclusion
+    story.append(Paragraph("9. Conclusion and Academic Defense Summary", h1_style))
     story.append(Paragraph(
-        "<b>EVENTWEB</b> bridges modern web engineering with campus community needs, replacing chaotic publicity channels "
-        "with an institutional-grade, aesthetically stunning platform. Its decoupled architecture guarantees sub-second responsiveness, "
-        "data privacy via RLS, and a scalable foundation for tertiary event discovery across West Africa.",
+        "EVENTWEB successfully demonstrates how modern web engineering, geospatial cartography, and cloud database architectures can solve a tangible logistical challenge in tertiary education. By replacing fragmented publicity channels with a unified, aesthetically refined platform, EVENTWEB provides KNUST students and student societies with a dependable, scalable, and high-performance event coordination infrastructure.",
         body_style
     ))
 
-    doc.build(story, canvasmaker=NumberedCanvas)
-    print("Technical Report PDF successfully generated.")
+    doc.build(story, canvasmaker=AcademicNumberedCanvas)
+    print("Clean Academic Technical Report PDF generated successfully.")
 
 if __name__ == "__main__":
-    build_pdf()
+    build_clean_pdf()
