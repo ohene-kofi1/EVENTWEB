@@ -1,6 +1,6 @@
 """
-Generates a clean, classic, black-and-white academic technical report PDF for EVENTWEB.
-No colored boxes, no dark blocks, no ASCII art—clean academic typography and structure.
+Generates a clean, straightforward Technical Report PDF for EVENTWEB.
+No author block, no academic term, no department references, no boxes.
 """
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
@@ -10,9 +10,9 @@ from reportlab.platypus import (
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 
-class AcademicNumberedCanvas(canvas.Canvas):
+class SimpleNumberedCanvas(canvas.Canvas):
     def __init__(self, *args, **kwargs):
-        super(AcademicNumberedCanvas, self).__init__(*args, **kwargs)
+        super(SimpleNumberedCanvas, self).__init__(*args, **kwargs)
         self._saved_page_states = []
 
     def showPage(self):
@@ -34,22 +34,21 @@ class AcademicNumberedCanvas(canvas.Canvas):
         
         # Header (pages > 1)
         if self._pageNumber > 1:
-            self.drawString(54, letter[1] - 36, "EVENTWEB: Campus Discovery & Ticketing Infrastructure — KNUST")
+            self.drawString(54, letter[1] - 36, "Technical Report")
             self.setStrokeColor(colors.black)
             self.setLineWidth(0.5)
             self.line(54, letter[1] - 42, letter[0] - 54, letter[1] - 42)
             
-        # Footer
+        # Footer: simple page numbers
         page_str = f"Page {self._pageNumber} of {page_count}"
         self.drawRightString(letter[0] - 54, 34, page_str)
-        self.drawString(54, 34, "Department of Computer Engineering · Academic Project Report")
         self.setStrokeColor(colors.black)
         self.setLineWidth(0.5)
         self.line(54, 44, letter[0] - 54, 44)
         
         self.restoreState()
 
-def build_clean_pdf():
+def build_pdf():
     pdf_filename = "TECHNICAL_REPORT.pdf"
     doc = SimpleDocTemplate(
         pdf_filename,
@@ -60,33 +59,21 @@ def build_clean_pdf():
         bottomMargin=54
     )
 
-    styles = getSampleStyleSheet()
-    
-    # Clean Academic Typography (Times-Roman / Helvetica)
-    doc_title_style = ParagraphStyle(
-        'AcademicDocTitle',
+    # Styles
+    title_style = ParagraphStyle(
+        'MainTitle',
         fontName='Times-Bold',
         fontSize=18,
         leading=22,
-        textColor=colors.black,
-        alignment=1, # Centered
-        spaceAfter=8
-    )
-    
-    doc_subtitle_style = ParagraphStyle(
-        'AcademicDocSubtitle',
-        fontName='Times-Roman',
-        fontSize=11,
-        leading=15,
         textColor=colors.black,
         alignment=1, # Centered
         spaceAfter=14
     )
     
     h1_style = ParagraphStyle(
-        'AcademicH1',
+        'SectionH1',
         fontName='Times-Bold',
-        fontSize=13,
+        fontSize=12.5,
         leading=16,
         textColor=colors.black,
         spaceBefore=14,
@@ -95,9 +82,9 @@ def build_clean_pdf():
     )
     
     h2_style = ParagraphStyle(
-        'AcademicH2',
+        'SectionH2',
         fontName='Times-BoldItalic',
-        fontSize=11,
+        fontSize=10.5,
         leading=14,
         textColor=colors.black,
         spaceBefore=9,
@@ -106,7 +93,7 @@ def build_clean_pdf():
     )
     
     body_style = ParagraphStyle(
-        'AcademicBody',
+        'BodyText',
         fontName='Times-Roman',
         fontSize=10,
         leading=14.5,
@@ -116,48 +103,27 @@ def build_clean_pdf():
     )
     
     bullet_style = ParagraphStyle(
-        'AcademicBullet',
+        'BulletText',
         parent=body_style,
         leftIndent=18,
         firstLineIndent=-12,
         spaceAfter=4
     )
-    
-    meta_style = ParagraphStyle(
-        'AcademicMeta',
-        fontName='Times-Roman',
-        fontSize=9.5,
-        leading=13,
-        textColor=colors.black
-    )
 
     story = []
 
-    # Title & Metadata
-    story.append(Paragraph("EVENTWEB: A UNIFIED CAMPUS EVENT DISCOVERY, GIS MAPPING, AND TICKETING SYSTEM FOR KNUST", doc_title_style))
-    story.append(Paragraph("Technical Report and Architectural Specification<br/>Presented to the Department of Computer Engineering", doc_subtitle_style))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.black, spaceBefore=0, spaceAfter=10))
-
-    meta_content = [
-        [Paragraph("<b>Author / Candidate:</b> Project Engineering Team", meta_style), Paragraph("<b>Target Institution:</b> KNUST, Kumasi, Ghana", meta_style)],
-        [Paragraph("<b>Academic Term:</b> 2025 / 2026 Academic Year", meta_style), Paragraph("<b>Core Technologies:</b> HTML5, CSS3, Supabase, Resend", meta_style)]
-    ]
-    t_meta = Table(meta_content, colWidths=[250, 254])
-    t_meta.setStyle(TableStyle([
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('PADDING', (0, 0), (-1, -1), 2),
-    ]))
-    story.append(t_meta)
-    story.append(HRFlowable(width="100%", thickness=0.5, color=colors.black, spaceBefore=8, spaceAfter=12))
+    # Simple Title Only
+    story.append(Paragraph("Technical Report", title_style))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.black, spaceBefore=0, spaceAfter=14))
 
     # Section 1
     story.append(Paragraph("1. Introduction and Background", h1_style))
     story.append(Paragraph(
-        "At Kwame Nkrumah University of Science and Technology (KNUST), campus life is driven by an active student body and numerous faculty associations organizing hundreds of extracurricular, academic, professional, and social events each semester. These range from engineering conferences, academic symposiums, and software hackathons to society masked dinners, sports tournaments, night markets, and religious fellowships.",
+        "At Kwame Nkrumah University of Science and Technology (KNUST), campus life is driven by an active student body and numerous associations organizing hundreds of extracurricular, academic, professional, and social events each semester. These range from academic conferences, symposiums, and software hackathons to society dinners, sports tournaments, night markets, and religious fellowships.",
         body_style
     ))
     story.append(Paragraph(
-        "Despite the high volume of high-impact campus events, publicity and registration mechanisms across the university remain heavily fragmented. Organizers rely on physical paper flyers pasted over public notice boards, unindexed broadcast messages on WhatsApp group chats, and short-lived social media stories. This lack of a structured digital channel leads to high information decay, poor attendance estimation, venue confusion among freshmen and non-resident students, and severe logistical bottlenecks during door check-ins.",
+        "Despite the high volume of events, publicity and registration mechanisms across the university remain heavily fragmented. Organizers rely on physical paper flyers pasted over public notice boards, unindexed broadcast messages on WhatsApp group chats, and short-lived social media stories. This lack of a structured digital channel leads to high information decay, poor attendance estimation, venue confusion among freshmen and non-resident students, and severe logistical bottlenecks during door check-ins.",
         body_style
     ))
 
@@ -185,7 +151,7 @@ def build_clean_pdf():
     story.append(Paragraph("• <b>Data and Authentication Layer (Supabase):</b> Utilizes a managed PostgreSQL 15 database enforcing relational integrity, custom category ENUMs, JSONB attendance tiers, database trigger functions, and Row-Level Security (RLS) policies.", bullet_style))
     story.append(Paragraph("• <b>Communication Layer (Resend & Edge Functions):</b> Serverless Deno functions triggered by database insertion webhooks to dispatch branded HTML ticket confirmations and calendar notices.", bullet_style))
 
-    # Section 4: Technology Stack Table
+    # Section 4
     story.append(Paragraph("4. Technical Stack Justification", h1_style))
     stack_data = [
         [Paragraph("<b>Component</b>", body_style), Paragraph("<b>Technology</b>", body_style), Paragraph("<b>Technical Justification</b>", body_style)],
@@ -210,7 +176,7 @@ def build_clean_pdf():
 
     story.append(PageBreak())
 
-    # Section 5: Database Engineering
+    # Section 5
     story.append(Paragraph("5. Relational Database Design and Data Integrity", h1_style))
     story.append(Paragraph(
         "The relational database schema is normalized across three core tables to guarantee referential integrity and eliminate redundancy:",
@@ -253,7 +219,7 @@ def build_clean_pdf():
         body_style
     ))
 
-    # Section 6: GIS Mapping
+    # Section 6
     story.append(Paragraph("6. Geospatial Mapping and Campus Venue Coordinates", h1_style))
     story.append(Paragraph(
         "To assist students in locating event venues across KNUST, EVENTWEB integrates a dedicated Leaflet GIS module mapped to calibrated campus coordinates:",
@@ -270,7 +236,7 @@ def build_clean_pdf():
         body_style
     ))
 
-    # Section 7: User Experience
+    # Section 7
     story.append(Paragraph("7. User Interface and Interaction Engineering", h1_style))
     story.append(Paragraph(
         "• <b>5-Second Autoplay Rotation:</b> The homepage poster showcase automatically advances to the next flyer every 5000 milliseconds when idle. When the user manually clicks next/previous controls, carousel indicators, or drags a card, the timer resets and restarts a fresh 5-second countdown from that moment.",
@@ -285,22 +251,22 @@ def build_clean_pdf():
         bullet_style
     ))
 
-    # Section 8: Resend Email
+    # Section 8
     story.append(Paragraph("8. Transactional Pass and Reminder Pipeline (Resend)", h1_style))
     story.append(Paragraph(
         "When a student registers, Supabase triggers a serverless Edge Function running on the Deno runtime. This function calls the Resend REST API to dispatch an immediate confirmation pass containing the event title, flyer thumbnail, society name, date, venue, and unique entry verification code (`EW-XXXX-XX`). API keys are securely stored in server environment variables and never exposed to client browsers.",
         body_style
     ))
 
-    # Section 9: Conclusion
-    story.append(Paragraph("9. Conclusion and Academic Defense Summary", h1_style))
+    # Section 9
+    story.append(Paragraph("9. Conclusion", h1_style))
     story.append(Paragraph(
-        "EVENTWEB successfully demonstrates how modern web engineering, geospatial cartography, and cloud database architectures can solve a tangible logistical challenge in tertiary education. By replacing fragmented publicity channels with a unified, aesthetically refined platform, EVENTWEB provides KNUST students and student societies with a dependable, scalable, and high-performance event coordination infrastructure.",
+        "EVENTWEB demonstrates how modern web engineering, geospatial cartography, and cloud database architectures can solve a tangible logistical challenge in tertiary education. By replacing fragmented publicity channels with a unified, aesthetically refined platform, EVENTWEB provides students and student societies with a dependable, scalable, and high-performance event coordination infrastructure.",
         body_style
     ))
 
-    doc.build(story, canvasmaker=AcademicNumberedCanvas)
-    print("Clean Academic Technical Report PDF generated successfully.")
+    doc.build(story, canvasmaker=SimpleNumberedCanvas)
+    print("Clean Technical Report PDF generated successfully.")
 
 if __name__ == "__main__":
-    build_clean_pdf()
+    build_pdf()

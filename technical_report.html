@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EVENTWEB: Technical Report — KNUST Campus Event Discovery & Ticketing Infrastructure</title>
+<title>Technical Report</title>
 <style>
   @page {
     size: A4;
@@ -28,36 +28,17 @@
 
   .title-block {
     text-align: center;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
+    border-bottom: 1pt solid #000;
+    padding-bottom: 12px;
   }
 
   h1 {
-    font-size: 16pt;
+    font-size: 18pt;
     font-weight: bold;
-    text-transform: uppercase;
-    margin: 0 0 10px 0;
-    line-height: 1.3;
+    margin: 0;
+    line-height: 1.2;
     letter-spacing: 0.02em;
-  }
-
-  .subtitle {
-    font-size: 11pt;
-    font-style: italic;
-    margin: 0 0 14px 0;
-  }
-
-  .meta-table {
-    width: 100%;
-    border-top: 1px solid #000;
-    border-bottom: 1px solid #000;
-    margin: 14px 0 24px 0;
-    padding: 8px 0;
-    font-size: 10pt;
-  }
-
-  .meta-table td {
-    padding: 3px 0;
-    vertical-align: top;
   }
 
   h2 {
@@ -168,24 +149,12 @@
 <button class="toolbar" onclick="window.print()">🖨️ Print / Save as PDF</button>
 
 <div class="title-block">
-  <h1>EVENTWEB: A Unified Campus Event Discovery, GIS Mapping, and Ticketing System for KNUST</h1>
-  <div class="subtitle">Technical Report & Engineering Design Document presented to the Department of Computer Engineering</div>
-  
-  <table class="meta-table">
-    <tr>
-      <td style="width: 50%;"><strong>Candidate / Authors:</strong> Project Engineering Team</td>
-      <td style="width: 50%;"><strong>Institution:</strong> KNUST, Kumasi, Ghana</td>
-    </tr>
-    <tr>
-      <td><strong>Academic Year:</strong> 2025 / 2026 Academic Session</td>
-      <td><strong>Core Architecture:</strong> Modernist Frontend, Supabase, Resend</td>
-    </tr>
-  </table>
+  <h1>Technical Report</h1>
 </div>
 
 <h2>1. Introduction and Background</h2>
 <p>
-  At Kwame Nkrumah University of Science and Technology (KNUST), extracurricular, academic, and professional activities form an essential component of student life. Throughout the academic year, various student associations, academic departments, clubs, and religious ministries—including the Faculty of Electrical and Computer Engineering Students' Association (ECESA), Computer Science Society (CSS), Mic & Madness, and ATLAS—organize hundreds of events. These include academic conferences, coding hackathons, annual dinners, sports competitions, night markets, and religious programs.
+  At Kwame Nkrumah University of Science and Technology (KNUST), extracurricular, academic, and professional activities form an essential component of student life. Throughout the academic year, various student associations, academic departments, clubs, and religious ministries organize hundreds of events. These include academic conferences, coding hackathons, annual dinners, sports competitions, night markets, and religious programs.
 </p>
 <p>
   Despite the high volume of events, publicity and registration mechanisms across the university remain heavily fragmented. Organizers rely on physical paper flyers pasted over campus notice boards, ephemeral WhatsApp status posts, and unstructured broadcast messages in group chats. This absence of a centralized digital directory results in information decay, inaccurate attendance forecasting, venue double-bookings, and lack of verified attendee records.
@@ -196,7 +165,7 @@
   The primary challenge addressed by this project is the lack of a centralized, real-time, and spatially aware platform for university event publicity. Specific challenges include:
 </p>
 <ul>
-  <li><strong>Information Scattering:</strong> Students miss valuable developmental programs due to unindexed publicity channels.</li>
+  <li><strong>Information Scattering:</strong> Students frequently miss valuable developmental programs due to uncoordinated publicity channels.</li>
   <li><strong>Geospatial Ambiguity:</strong> Freshmen and non-resident students struggle to navigate between distant campus venues (such as the Great Hall, Paa Joe Stadium, College of Science Auditorium, and Prempeh II Library).</li>
   <li><strong>Capacity and Check-in Inefficiencies:</strong> Society organizers lack automated registration caps, resulting in hall overcrowding or unconfirmed turnouts.</li>
 </ul>
@@ -325,13 +294,9 @@ CREATE TRIGGER on_registration_created
   When a student registers, Supabase triggers a serverless Edge Function running on the Deno runtime. This function calls the Resend REST API to dispatch an immediate confirmation pass containing the event title, flyer thumbnail, society name, date, venue, and unique entry verification code (`EW-XXXX-XX`). API keys are securely stored in server environment variables and never exposed to client browsers.
 </p>
 
-<h2>9. Conclusion and Academic Defense Summary</h2>
+<h2>9. Conclusion</h2>
 <p>
-  EVENTWEB demonstrates how modern web engineering, geospatial cartography, and cloud database architectures can solve a tangible logistical challenge in tertiary education. By replacing fragmented publicity channels with a unified, aesthetically refined platform, EVENTWEB provides KNUST students and student societies with a dependable, scalable, and high-performance event coordination infrastructure.
-</p>
-
-<p style="text-align: center; margin-top: 30px; font-size: 10pt; font-style: italic;">
-  Department of Computer Engineering · KNUST, Kumasi · Academic Year 2025/2026
+  EVENTWEB demonstrates how modern web engineering, geospatial cartography, and cloud database architectures can solve a tangible logistical challenge in tertiary education. By replacing fragmented publicity channels with a unified, aesthetically refined platform, EVENTWEB provides students and student societies with a dependable, scalable, and high-performance event coordination infrastructure.
 </p>
 
 </body>
