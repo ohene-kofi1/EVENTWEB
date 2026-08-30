@@ -4,10 +4,9 @@
  */
 
 // 1. Supabase Project Credentials
-// Replace with your project details from https://supabase.com/dashboard/project/_/settings/api
 const SUPABASE_CONFIG = {
-  url: window.__EW_SUPABASE_URL || 'https://YOUR_PROJECT_ID.supabase.co',
-  anonKey: window.__EW_SUPABASE_ANON_KEY || 'YOUR_ANON_KEY_HERE'
+  url: window.__EW_SUPABASE_URL || 'https://zjedibwbzxqjudxyhuyi.supabase.co',
+  anonKey: window.__EW_SUPABASE_ANON_KEY || 'sb_publishable_NaRHL9Nz6IM8E7eWPTqdgA_SU8Yyr4e'
 };
 
 // Check if credentials have been configured
