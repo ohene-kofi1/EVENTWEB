@@ -154,36 +154,49 @@
 
 <h2>1. Introduction and Background</h2>
 <p>
-  At Kwame Nkrumah University of Science and Technology (KNUST), extracurricular, academic, and professional activities form an essential component of student life. Throughout the academic year, various student associations, academic departments, clubs, and religious ministries organize hundreds of events. These include academic conferences, coding hackathons, annual dinners, sports competitions, night markets, and religious programs.
+  At Kwame Nkrumah University of Science and Technology (KNUST), campus life is driven by an active student body and numerous associations organizing hundreds of extracurricular, academic, professional, and social events each semester. These range from academic conferences, symposiums, and software hackathons to society dinners, sports tournaments, night markets, and religious fellowships.
 </p>
 <p>
-  Despite the high volume of events, publicity and registration mechanisms across the university remain heavily fragmented. Organizers rely on physical paper flyers pasted over campus notice boards, ephemeral WhatsApp status posts, and unstructured broadcast messages in group chats. This absence of a centralized digital directory results in information decay, inaccurate attendance forecasting, venue double-bookings, and lack of verified attendee records.
+  Despite the high volume of events, publicity and registration mechanisms across the university remain heavily fragmented. Organizers rely on physical paper flyers pasted over public notice boards, unindexed broadcast messages on WhatsApp group chats, and short-lived social media stories. This lack of a structured digital channel leads to high information decay, poor attendance estimation, venue confusion among freshmen and non-resident students, and severe logistical bottlenecks during door check-ins.
 </p>
 
 <h2>2. Problem Statement and Objectives</h2>
 <p>
-  The primary challenge addressed by this project is the lack of a centralized, real-time, and spatially aware platform for university event publicity. Specific challenges include:
+  The primary challenge addressed by this project is the absence of a reliable, centralized, and spatially aware event coordination platform for the university. Specific issues include:
 </p>
 <ul>
-  <li><strong>Information Scattering:</strong> Students frequently miss valuable developmental programs due to uncoordinated publicity channels.</li>
-  <li><strong>Geospatial Ambiguity:</strong> Freshmen and non-resident students struggle to navigate between distant campus venues (such as the Great Hall, Paa Joe Stadium, College of Science Auditorium, and Prempeh II Library).</li>
-  <li><strong>Capacity and Check-in Inefficiencies:</strong> Society organizers lack automated registration caps, resulting in hall overcrowding or unconfirmed turnouts.</li>
+  <li><strong>Information Scattering:</strong> Students frequently miss relevant developmental programs due to uncoordinated publicity channels.</li>
+  <li><strong>Geospatial Ambiguity:</strong> Navigating diverse venue locations across campus—such as the Great Hall, Paa Joe Stadium, College of Science Auditorium, and Prempeh II Library—is challenging without integrated maps.</li>
+  <li><strong>Capacity and Roster Bottlenecks:</strong> Student societies lack real-time registration caps and verified attendee rosters, causing hall overcrowding or unexpected empty seats.</li>
 </ul>
 <p class="no-indent">
-  <strong>Project Objectives:</strong> The objective of EVENTWEB is to design and implement an institutional-grade platform that aggregates all campus events into five distinct tracks (Academic, Social, Sports, Religious, Business), provides spatial navigation on an interactive campus map, automates ticket reservation with unique verification codes, and provides verified organizers with an event administration console.
+  <strong>Project Objectives:</strong> The objective of EVENTWEB is to design and implement an institutional-grade platform that unifies event discovery, provides spatial navigation on an interactive campus map, automates ticket reservation with unique verification codes, and provides verified societies with an administrative management dashboard.
 </p>
 
-<h2>3. System Architecture and Methodology</h2>
+<h2>3. System Architecture and Frontend Layer Stack</h2>
 <p>
-  EVENTWEB is designed following a decoupled, three-tier cloud software architecture consisting of a high-performance presentation client, a managed relational database layer, and a serverless notification engine.
+  EVENTWEB is engineered following a decoupled, three-tier cloud software architecture consisting of an ultra-high-performance client presentation layer, a managed relational database layer, and a serverless notification engine.
+</p>
+
+<h3>3.1 Detailed Presentation Layer Architecture (Frontend Stack)</h3>
+<p>
+  The frontend is architected as an ultra-fast, zero-overhead client layer prioritizing sub-second First Contentful Paint (FCP) and high visual fidelity without the heavy execution overhead of bloated single-page application frameworks. The presentation layer comprises five coordinated engineering subsystems:
 </p>
 <ul>
-  <li><strong>Presentation Layer (Frontend):</strong> Implemented in semantic HTML5, custom Modernist CSS tokens, and declarative component state logic. It features zero border-radius styling, precise 1px hairline rules, an automated 5-second hero poster carousel with user interaction reset, and a Leaflet.js campus map.</li>
-  <li><strong>Data and Authentication Layer (Supabase):</strong> Utilizes a managed PostgreSQL 15 database enforcing relational integrity, custom category ENUMs, JSONB attendance tiers, database trigger functions, and Row-Level Security (RLS) policies.</li>
-  <li><strong>Communication Layer (Resend & Edge Functions):</strong> Serverless Deno functions triggered by database insertion webhooks to dispatch branded HTML ticket confirmations and calendar notices.</li>
+  <li><strong>Declarative Component State Engine (`DCLogic`):</strong> Rather than relying on heavy virtual-DOM abstraction layers, the frontend utilizes an efficient reactive component architecture. The core component state maintains centralized reactive properties (`cat`, `query`, `sort`, `venue`, `openId`, `hero`, `autoplay`, `dragX`, `dragging`). Component lifecycles (`componentDidMount`, `componentDidUpdate`, `componentWillUnmount`) manage background timers, custom DOM event bindings, and bi-directional synchronization with the GIS map.</li>
+  <li><strong>Modernist CSS Design System & Custom Property Tokens:</strong> All visual styling is centralized inside a formal token layer (`eventweb.css`). The system enforces three core visual rules:
+    <ul>
+      <li><em>Zero-Radius Philosophy (`--ew-radius: 0px`):</em> Strict modernist/Swiss design principles where cards, buttons, tags, chips, and modal sheets feature razor-sharp geometric edges.</li>
+      <li><em>1px Precision Hairline Boundaries (`--ew-rule: 1px`):</em> Replaced thick neo-brutalist borders with clean 1px hairlines (`--ew-rule-color`) allowing cards, sticky headers, and input controls to blend seamlessly.</li>
+      <li><em>Curated Color Ramps & WCAG AA Contrast:</em> Brand blue (`#1a3ee8`) clears a 7.25:1 contrast ratio on light grounds; dark mode automatically adjusts background tokens (`--ew-bg: #090a0f`) and surface borders (`--ew-rule-color: #29324a`) with zero Flash of Unstyled Content (FOUC).</li>
+    </ul>
+  </li>
+  <li><strong>3D Perspective Hero Deck & Gesture Physics Engine:</strong> The hero section renders an interactive 3D poster deck where card offsets, rotation angles, scale factors, and opacity layers are computed deterministically (Card 0 at scale 1.0, z-index 30; Card 1 at scale 0.86, z-index 20; Card 2 at scale 0.74, z-index 10). The gesture physics engine hooks into Pointer Events (`pointerdown`, `pointermove`, `pointerup`), tracking touch/mouse drag displacement with a 70px release threshold that snaps to adjacent cards or springs back fluidly.</li>
+  <li><strong>Smart 5-Second Inactivity Autoplay State Machine:</strong> When left idle, the poster stack advances automatically every 5000ms. An interaction state listener monitors user navigation: clicking next/previous buttons, selecting carousel indicators, dragging a poster, or selecting a category clears the active interval and immediately restarts a fresh 5-second countdown. Opening an event registration sheet pauses autoplay to ensure uninterrupted reading.</li>
+  <li><strong>Client-Side GIS Map Web Component (`<knust-map>`):</strong> Encapsulated Leaflet.js cartography embedded directly into the DOM tree. Implements stacking context isolation (`isolation: isolate; z-index: 1`) to prevent Leaflet internal tile panes from overlapping the sticky top navigation header during vertical scrolling.</li>
 </ul>
 
-<h2>4. Technology Stack Justification</h2>
+<h2>4. Technical Stack Justification</h2>
 <table class="data-table">
   <thead>
     <tr>
@@ -282,19 +295,12 @@ CREATE TRIGGER on_registration_created
   The mapping layer uses architectural drafting pins with category-coded color indicators. Selecting an event in the list smoothly pans the map viewport to that venue, while tapping a map marker instantly filters the event roster.
 </p>
 
-<h2>7. User Interface and Interaction Engineering</h2>
-<ul>
-  <li><strong>5-Second Autoplay Rotation:</strong> The homepage poster showcase automatically advances to the next flyer every 5000 milliseconds when idle. When the user manually clicks next/previous controls, carousel indicators, or drags a card, the timer resets and restarts a fresh 5-second countdown from that moment.</li>
-  <li><strong>Thin 1px Modernist Hairlines:</strong> All interface components (cards, navbar, search input, chips, and modal sheets) utilize a clean 1px hairline rule (`--ew-rule: 1px`). In dark mode, borders shift to `#29324a` to seamlessly blend without harsh glare.</li>
-  <li><strong>Modal Focus Isolation:</strong> Opening an event registration sheet automatically suspends background rotations to preserve user concentration while filling out details.</li>
-</ul>
-
-<h2>8. Transactional Pass and Reminder Pipeline (Resend)</h2>
+<h2>7. Transactional Pass and Reminder Pipeline (Resend)</h2>
 <p>
   When a student registers, Supabase triggers a serverless Edge Function running on the Deno runtime. This function calls the Resend REST API to dispatch an immediate confirmation pass containing the event title, flyer thumbnail, society name, date, venue, and unique entry verification code (`EW-XXXX-XX`). API keys are securely stored in server environment variables and never exposed to client browsers.
 </p>
 
-<h2>9. Conclusion</h2>
+<h2>8. Conclusion</h2>
 <p>
   EVENTWEB demonstrates how modern web engineering, geospatial cartography, and cloud database architectures can solve a tangible logistical challenge in tertiary education. By replacing fragmented publicity channels with a unified, aesthetically refined platform, EVENTWEB provides students and student societies with a dependable, scalable, and high-performance event coordination infrastructure.
 </p>

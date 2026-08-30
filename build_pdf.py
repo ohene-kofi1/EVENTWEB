@@ -1,6 +1,7 @@
 """
-Generates a clean, straightforward Technical Report PDF for EVENTWEB.
-No author block, no academic term, no department references, no boxes.
+Generates a comprehensive, academically expanded Technical Report PDF for EVENTWEB.
+Deeply elaborates on the Frontend Layer Stack, Component State Machine, Design System,
+and GIS Spatial Architecture.
 """
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
@@ -10,9 +11,9 @@ from reportlab.platypus import (
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 
-class SimpleNumberedCanvas(canvas.Canvas):
+class AcademicNumberedCanvas(canvas.Canvas):
     def __init__(self, *args, **kwargs):
-        super(SimpleNumberedCanvas, self).__init__(*args, **kwargs)
+        super(AcademicNumberedCanvas, self).__init__(*args, **kwargs)
         self._saved_page_states = []
 
     def showPage(self):
@@ -34,12 +35,12 @@ class SimpleNumberedCanvas(canvas.Canvas):
         
         # Header (pages > 1)
         if self._pageNumber > 1:
-            self.drawString(54, letter[1] - 36, "Technical Report")
+            self.drawString(54, letter[1] - 36, "Technical Report: EVENTWEB")
             self.setStrokeColor(colors.black)
             self.setLineWidth(0.5)
             self.line(54, letter[1] - 42, letter[0] - 54, letter[1] - 42)
             
-        # Footer: simple page numbers
+        # Footer
         page_str = f"Page {self._pageNumber} of {page_count}"
         self.drawRightString(letter[0] - 54, 34, page_str)
         self.setStrokeColor(colors.black)
@@ -59,14 +60,13 @@ def build_pdf():
         bottomMargin=54
     )
 
-    # Styles
     title_style = ParagraphStyle(
         'MainTitle',
         fontName='Times-Bold',
         fontSize=18,
         leading=22,
         textColor=colors.black,
-        alignment=1, # Centered
+        alignment=1,
         spaceAfter=14
     )
     
@@ -95,11 +95,11 @@ def build_pdf():
     body_style = ParagraphStyle(
         'BodyText',
         fontName='Times-Roman',
-        fontSize=10,
-        leading=14.5,
+        fontSize=9.5,
+        leading=14,
         textColor=colors.black,
         spaceAfter=6,
-        alignment=4 # Justified
+        alignment=4
     )
     
     bullet_style = ParagraphStyle(
@@ -112,7 +112,7 @@ def build_pdf():
 
     story = []
 
-    # Simple Title Only
+    # Title
     story.append(Paragraph("Technical Report", title_style))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.black, spaceBefore=0, spaceAfter=14))
 
@@ -141,15 +141,64 @@ def build_pdf():
         body_style
     ))
 
-    # Section 3
-    story.append(Paragraph("3. System Architecture and Methodology", h1_style))
+    # Section 3: Architecture & Deep Frontend Expansion
+    story.append(Paragraph("3. System Architecture and Frontend Layer Stack", h1_style))
     story.append(Paragraph(
-        "EVENTWEB is engineered following a decoupled, three-tier cloud software architecture consisting of a high-performance client frontend, a managed relational database layer, and a serverless notification engine.",
+        "EVENTWEB is engineered following a decoupled, three-tier cloud software architecture consisting of an ultra-high-performance client presentation layer, a managed relational database layer, and a serverless notification engine.",
         body_style
     ))
-    story.append(Paragraph("• <b>Presentation Layer (Frontend):</b> Built using semantic HTML5, custom Modernist CSS tokens, and declarative component state logic. It features zero border-radius styling, precise 1px hairlines, an automated 5-second hero poster carousel with interaction-pause mechanics, and a Leaflet.js campus map.", bullet_style))
-    story.append(Paragraph("• <b>Data and Authentication Layer (Supabase):</b> Utilizes a managed PostgreSQL 15 database enforcing relational integrity, custom category ENUMs, JSONB attendance tiers, database trigger functions, and Row-Level Security (RLS) policies.", bullet_style))
-    story.append(Paragraph("• <b>Communication Layer (Resend & Edge Functions):</b> Serverless Deno functions triggered by database insertion webhooks to dispatch branded HTML ticket confirmations and calendar notices.", bullet_style))
+
+    story.append(Paragraph("3.1 Detailed Presentation Layer Architecture (Frontend Stack)", h2_style))
+    story.append(Paragraph(
+        "The frontend is architected as an ultra-fast, zero-overhead client layer prioritizing sub-second First Contentful Paint (FCP) and high visual fidelity without the heavy execution overhead of bloated single-page application frameworks. The presentation layer comprises five coordinated engineering subsystems:",
+        body_style
+    ))
+    
+    story.append(Paragraph(
+        "<b>1. Declarative Component State Engine (`DCLogic`):</b><br/>"
+        "Rather than relying on heavy virtual-DOM abstraction layers, the frontend utilizes an efficient reactive component architecture. "
+        "The core component state maintains centralized reactive properties (`cat`, `query`, `sort`, `venue`, `openId`, `hero`, `autoplay`, `dragX`, `dragging`). "
+        "Component lifecycles (`componentDidMount`, `componentDidUpdate`, `componentWillUnmount`) manage background timers, custom DOM event bindings, "
+        "and bi-directional synchronization with the GIS map.",
+        body_style
+    ))
+    
+    story.append(Paragraph(
+        "<b>2. Modernist CSS Design System & Custom Property Tokens:</b><br/>"
+        "All visual styling is centralized inside a formal token layer (`eventweb.css`). The system enforces three core visual rules:<br/>"
+        "• <i>Zero-Radius Philosophy (`--ew-radius: 0px`):</i> Strict modernist/Swiss design principles where cards, buttons, tags, chips, and modal sheets feature razor-sharp geometric edges.<br/>"
+        "• <i>1px Precision Hairline Boundaries (`--ew-rule: 1px`):</i> Replaced thick neo-brutalist borders with clean 1px hairlines (`--ew-rule-color`) allowing cards, sticky headers, and input controls to blend seamlessly.<br/>"
+        "• <i>Curated Color Ramps & WCAG AA Contrast:</i> Brand blue (`#1a3ee8`) clears a 7.25:1 contrast ratio on light grounds; dark mode automatically adjusts background tokens (`--ew-bg: #090a0f`) and surface borders (`--ew-rule-color: #29324a`) with zero Flash of Unstyled Content (FOUC).",
+        body_style
+    ))
+
+    story.append(Paragraph(
+        "<b>3. 3D Perspective Hero Deck & Gesture Physics Engine:</b><br/>"
+        "The hero section renders an interactive 3D poster deck where card offsets, rotation angles, scale factors, and opacity layers are computed deterministically:<br/>"
+        "• Card index 0: `scale: 1.0, opacity: 1.0, z-index: 30, rotation: 0°`<br/>"
+        "• Card index 1: `scale: 0.86, opacity: 0.5, z-index: 20, rotation: +3°`<br/>"
+        "• Card index 2: `scale: 0.74, opacity: 0.24, z-index: 10, rotation: +5.5°`<br/>"
+        "The gesture physics engine hooks into Pointer Events (`pointerdown`, `pointermove`, `pointerup`), tracking touch/mouse drag displacement (`dragX`) "
+        "with a 70px release threshold that snaps to adjacent cards or springs back fluidly.",
+        body_style
+    ))
+
+    story.append(Paragraph(
+        "<b>4. Smart 5-Second Inactivity Autoplay State Machine:</b><br/>"
+        "When left idle, the poster stack advances automatically every 5000ms. An interaction state listener monitors user navigation: "
+        "clicking next/previous buttons, selecting carousel indicators, dragging a poster, or selecting a category clears the active interval "
+        "and immediately restarts a fresh 5-second countdown. Opening an event registration sheet pauses autoplay to ensure uninterrupted reading.",
+        body_style
+    ))
+
+    story.append(Paragraph(
+        "<b>5. Client-Side GIS Map Web Component (`<knust-map>`):</b><br/>"
+        "Encapsulated Leaflet.js cartography embedded directly into the DOM tree. Implements stacking context isolation (`isolation: isolate; z-index: 1`) "
+        "to prevent Leaflet internal tile panes from overlapping the sticky top navigation header during vertical scrolling.",
+        body_style
+    ))
+
+    story.append(PageBreak())
 
     # Section 4
     story.append(Paragraph("4. Technical Stack Justification", h1_style))
@@ -174,9 +223,7 @@ def build_pdf():
     story.append(t_stack)
     story.append(Spacer(1, 10))
 
-    story.append(PageBreak())
-
-    # Section 5
+    # Section 5: Database Engineering
     story.append(Paragraph("5. Relational Database Design and Data Integrity", h1_style))
     story.append(Paragraph(
         "The relational database schema is normalized across three core tables to guarantee referential integrity and eliminate redundancy:",
@@ -219,7 +266,7 @@ def build_pdf():
         body_style
     ))
 
-    # Section 6
+    # Section 6: GIS Mapping
     story.append(Paragraph("6. Geospatial Mapping and Campus Venue Coordinates", h1_style))
     story.append(Paragraph(
         "To assist students in locating event venues across KNUST, EVENTWEB integrates a dedicated Leaflet GIS module mapped to calibrated campus coordinates:",
@@ -236,37 +283,22 @@ def build_pdf():
         body_style
     ))
 
-    # Section 7
-    story.append(Paragraph("7. User Interface and Interaction Engineering", h1_style))
-    story.append(Paragraph(
-        "• <b>5-Second Autoplay Rotation:</b> The homepage poster showcase automatically advances to the next flyer every 5000 milliseconds when idle. When the user manually clicks next/previous controls, carousel indicators, or drags a card, the timer resets and restarts a fresh 5-second countdown from that moment.",
-        bullet_style
-    ))
-    story.append(Paragraph(
-        "• <b>Thin 1px Modernist Hairlines:</b> All interface components (cards, navbar, search input, chips, and modal sheets) utilize a clean 1px hairline rule (`--ew-rule: 1px`). In dark mode, borders shift to `#29324a` to seamlessly blend without harsh glare.",
-        bullet_style
-    ))
-    story.append(Paragraph(
-        "• <b>Modal Focus Isolation:</b> Opening an event registration sheet automatically suspends background rotations to preserve user concentration while filling out details.",
-        bullet_style
-    ))
-
-    # Section 8
-    story.append(Paragraph("8. Transactional Pass and Reminder Pipeline (Resend)", h1_style))
+    # Section 7: Resend Email
+    story.append(Paragraph("7. Transactional Pass and Reminder Pipeline (Resend)", h1_style))
     story.append(Paragraph(
         "When a student registers, Supabase triggers a serverless Edge Function running on the Deno runtime. This function calls the Resend REST API to dispatch an immediate confirmation pass containing the event title, flyer thumbnail, society name, date, venue, and unique entry verification code (`EW-XXXX-XX`). API keys are securely stored in server environment variables and never exposed to client browsers.",
         body_style
     ))
 
-    # Section 9
-    story.append(Paragraph("9. Conclusion", h1_style))
+    # Section 8: Conclusion
+    story.append(Paragraph("8. Conclusion", h1_style))
     story.append(Paragraph(
         "EVENTWEB demonstrates how modern web engineering, geospatial cartography, and cloud database architectures can solve a tangible logistical challenge in tertiary education. By replacing fragmented publicity channels with a unified, aesthetically refined platform, EVENTWEB provides students and student societies with a dependable, scalable, and high-performance event coordination infrastructure.",
         body_style
     ))
 
-    doc.build(story, canvasmaker=SimpleNumberedCanvas)
-    print("Clean Technical Report PDF generated successfully.")
+    doc.build(story, canvasmaker=AcademicNumberedCanvas)
+    print("Expanded Academic Technical Report PDF generated successfully.")
 
 if __name__ == "__main__":
     build_pdf()
