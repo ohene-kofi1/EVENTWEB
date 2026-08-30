@@ -13,7 +13,7 @@
   function getPreferredTheme() {
     const saved = getSavedTheme();
     if (saved === 'dark' || saved === 'light') return saved;
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return 'light'; // Default is always light mode
   }
 
   function applyTheme(theme) {
@@ -76,11 +76,11 @@
     }
   });
 
-  // Watch system color scheme changes if user has not set a manual override
+  // Keep default light mode unless explicitly changed by user
   if (window.matchMedia) {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-      if (!getSavedTheme()) {
-        applyTheme(e.matches ? 'dark' : 'light');
+      if (getSavedTheme()) {
+        applyTheme(getSavedTheme());
       }
     });
   }
