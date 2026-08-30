@@ -17,7 +17,7 @@
     html:
       '<div style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;' +
       'font-family:\'JetBrains Mono\',monospace;font-size:13px;font-weight:600;color:#fff;' +
-      'border:2px solid #201e1d;background:' + (on ? '#1a3ee8' : '#201e1d') + '">' + n + '</div>'
+      'border:1px solid #201e1d;background:' + (on ? '#1a3ee8' : '#201e1d') + '">' + n + '</div>'
   });
 
   // Category tokens live in eventweb.css. divIcon markup is inserted into the
@@ -58,7 +58,7 @@
         '<span style="position:absolute;left:0;bottom:0;display:block">' +
           `<span style="position:absolute;left:0;bottom:0;width:2px;height:${stemH}px;background:var(--ew-ink, #101215)"></span>` +
           `<span style="position:absolute;${flagPos};display:flex;align-items:stretch;` +
-            `border:2px solid var(--ew-rule-color, #101215);background:${on ? 'var(--ew-ink, #101215)' : 'var(--ew-bg, #fff)'};white-space:nowrap;` +
+            `border:1px solid var(--ew-rule-color, #101215);background:${on ? 'var(--ew-ink, #101215)' : 'var(--ew-bg, #fff)'};white-space:nowrap;` +
             `box-shadow:0 2px 8px rgba(0,0,0,${on ? '0.35' : '0.15'})">` +
             flagContent +
           '</span>' +

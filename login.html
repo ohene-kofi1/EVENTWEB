@@ -229,7 +229,7 @@ class Component extends DCLogic {
       pwToggle: st.showPw ? 'HIDE' : 'SHOW',
       togglePw: () => this.setState(s => ({ showPw: !s.showPw })),
       toggleRemember: () => this.setState(s => ({ remember: !s.remember })),
-      boxStyle: 'width:17px;height:17px;flex-shrink:0;border-radius:0;display:flex;align-items:center;justify-content:center;border:1.5px solid ' +
+      boxStyle: 'width:17px;height:17px;flex-shrink:0;border-radius:0;display:flex;align-items:center;justify-content:center;border:1px solid ' +
         (st.remember ? accent : '#c9cdd6') + ';background:' + (st.remember ? accent : '#fff'),
       submitLabel: isSignup
         ? (isOrg ? 'Create organizer account' : 'Create account')

@@ -67,10 +67,10 @@
   --ew-cat-business: #8a5a00;
 
   /* --- structure ---------------------------------------------------
-     Modernist is a zero-radius system. Its readme is explicit:
-     "Do not round a corner anywhere". These stay 0 on purpose. */
+     Modernist is a zero-radius system with crisp, refined hairlines.
+     Thin 1px borders let cards, navigation, and inputs blend seamlessly. */
   --ew-radius: 0px;
-  --ew-rule: 2px;
+  --ew-rule: 1px;
   --ew-rule-color: var(--ew-ink);
   --ew-hairline: 1px solid var(--ew-neutral-200);
 
@@ -141,7 +141,7 @@
   --ew-dark-raised: #0b0e14;
   --ew-dark-line: #171b26;
 
-  --ew-rule-color: #f2f4f8;
+  --ew-rule-color: #29324a;
   --ew-hairline: 1px solid #1c2234;
 
   --ew-cat-academic: #4971f7;
