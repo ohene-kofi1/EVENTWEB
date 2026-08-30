@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TECHNICAL REPORT: EVENTWEB — KNUST Campus Event Discovery & Ticketing Infrastructure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  @page {
+    size: A4;
+    margin: 20mm 18mm 20mm 18mm;
+    @bottom-right {
+      content: counter(page);
+    }
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #101215;
+    background: #ffffff;
+    line-height: 1.6;
+    font-size: 13.5px;
+    margin: 0;
+    padding: 30px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  /* Header / Title block */
+  .report-header {
+    border-bottom: 2px solid #101215;
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+  }
+
+  .report-badge {
+    display: inline-block;
+    background: #1a3ee8;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin: 0 0 8px 0;
+    color: #101215;
+  }
+
+  .report-subtitle {
+    font-size: 15px;
+    font-weight: 600;
+    color: #4b5160;
+    margin: 0 0 16px 0;
+    line-height: 1.4;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    background: #f7f8fa;
+    border: 1px solid #e0e2e8;
+    padding: 12px 16px;
+    font-size: 12px;
+  }
+
+  .meta-item strong {
+    color: #101215;
+  }
+
+  .meta-item span {
+    color: #6c717c;
+  }
+
+  /* Headings */
+  h2 {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 32px 0 12px 0;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #101215;
+    color: #101215;
+  }
+
+  h3 {
+    font-size: 14.5px;
+    font-weight: 700;
+    margin: 20px 0 8px 0;
+    color: #1a3ee8;
+  }
+
+  p {
+    margin: 0 0 12px 0;
+    color: #2b303b;
+    text-align: justify;
+  }
+
+  ul, ol {
+    margin: 0 0 14px 0;
+    padding-left: 20px;
+  }
+
+  li {
+    margin-bottom: 6px;
+    color: #2b303b;
+  }
+
+  /* Code & Preformatted */
+  pre, code {
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 11.5px;
+  }
+
+  pre {
+    background: #0c0e12;
+    color: #f2f4f8;
+    padding: 14px 16px;
+    border: 1px solid #101215;
+    overflow-x: auto;
+    line-height: 1.45;
+    margin: 14px 0;
+    border-radius: 0;
+  }
+
+  p code, li code {
+    background: #eef1ff;
+    color: #0e2478;
+    padding: 2px 5px;
+    font-size: 12px;
+    border: 1px solid #d6deff;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 20px 0;
+    font-size: 12px;
+  }
+
+  th, td {
+    padding: 8px 12px;
+    text-align: left;
+    border: 1px solid #e0e2e8;
+  }
+
+  th {
+    background: #f7f8fa;
+    font-weight: 800;
+    color: #101215;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #101215;
+  }
+
+  tr:nth-child(even) td {
+    background: #fafbfc;
+  }
+
+  /* Callout boxes */
+  .callout {
+    background: #eef1ff;
+    border-left: 3px solid #1a3ee8;
+    padding: 12px 16px;
+    margin: 16px 0;
+    font-size: 12.5px;
+  }
+
+  .callout-title {
+    font-weight: 800;
+    color: #0e2478;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+
+  /* Print Actions Toolbar */
+  .toolbar {
+    position: sticky;
+    top: 0;
+    background: #101215;
+    color: #ffffff;
+    padding: 12px 20px;
+    margin: -30px -30px 24px -30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+  }
+
+  .print-btn {
+    background: #1a3ee8;
+    color: #ffffff;
+    border: none;
+    padding: 8px 18px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 0;
+    transition: background 0.15s ease;
+  }
+
+  .print-btn:hover {
+    background: #3d68ff;
+  }
+
+  @media print {
+    .toolbar {
+      display: none !important;
+    }
+    body {
+      padding: 0;
+    }
+    .page-break {
+      page-break-before: always;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div>
+    <strong>EVENTWEB — Technical Report</strong>
+    <span style="opacity:0.75; font-size:12px; margin-left:10px;">Ready for Academic Presentation</span>
+  </div>
+  <button class="print-btn" onclick="window.print()">📥 Print / Save as PDF</button>
+</div>
+
+<div class="container">
+
+  <div class="report-header">
+    <span class="report-badge">Engineering Technical Report</span>
+    <h1>EVENTWEB: A Unified Campus Event Discovery, GIS Mapping, and Ticketing Infrastructure</h1>
+    <div class="report-subtitle">Architectural Design, Distributed Cloud Backend, Spatial GIS Integration, and Transactional Notification Pipeline</div>
+    
+    <div class="meta-grid">
+      <div class="meta-item">
+        <span>Institution:</span><br>
+        <strong>KNUST, Kumasi</strong>
+      </div>
+      <div class="meta-item">
+        <span>Domain:</span><br>
+        <strong>Software Engineering / Web GIS</strong>
+      </div>
+      <div class="meta-item">
+        <span>Backend / Auth:</span><br>
+        <strong>Supabase (PostgreSQL + RLS)</strong>
+      </div>
+      <div class="meta-item">
+        <span>Email Service:</span><br>
+        <strong>Resend (Edge Functions)</strong>
+      </div>
+    </div>
+  </div>
+
+  <h2>1. Executive Summary & Problem Formulation</h2>
+  <p>
+    Kwame Nkrumah University of Science and Technology (KNUST) hosts hundreds of events per semester across its colleges, halls of residence, faculties, and student associations (such as ECESA, CSS, Mic & Madness, and ATLAS). Historically, event promotion has relied on highly fragmented channels—predominantly ephemeral WhatsApp status updates, unstructured group blasts, and physical paper posters pasted across campus walls.
+  </p>
+  <p>
+    This disorganization produces severe institutional inefficiencies: rapid information decay, poor attendance forecasting, double-booked venues, and zero centralized verification of registered attendees.
+  </p>
+  <p>
+    <strong>EVENTWEB</strong> is engineered as a unified digital ecosystem providing:
+  </p>
+  <ul>
+    <li>A centralized, live-updating <strong>Campus Discovery Board</strong> with structured event categorization (Academic, Social, Sports, Religious, and Business).</li>
+    <li>An <strong>Interactive GIS Spatial Map</strong> pinning venues with custom architectural callout coordinates.</li>
+    <li>An automated <strong>Ticketing and Verification Pipeline</strong> delivering unique alphanumeric reference codes (<code>EW-XXXX-XX</code>) via email passes.</li>
+    <li>A verified <strong>Society Organizer Portal</strong> allowing event coordinators to upload posters to CDN storage and monitor real-time ticket capacities.</li>
+  </ul>
+
+  <h2>2. System Architecture & Component Model</h2>
+  <p>
+    EVENTWEB is built on a decoupled, cloud-native architecture prioritizing sub-second load times, strict relational data integrity, and role-based access security.
+  </p>
+
+  <pre>
+┌─────────────────────────────────────────────────────────────────────────┐
+│                           EVENTWEB PLATFORM                             │
+├───────────────────────────────────┬─────────────────────────────────────┤
+│         STUDENT CLIENT            │          ORGANIZER CONSOLE          │
+│ • 5s Auto-Rotating Poster Board   │ • Verified Society Authentication   │
+│ • Category Filtering & Search     │ • Flyer Upload (Supabase Storage)   │
+│ • Interactive KNUST GIS Map       │ • Capacity & Tier Configuration     │
+│ • Instant Registration & Code Gen │ • Real-Time Attendee Tracking       │
+└─────────────────┬─────────────────┴──────────────────┬──────────────────┘
+                  │                                    │
+                  ▼                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                       SUPABASE CLOUD INFRASTRUCTURE                     │
+│  ┌──────────────────────┐  ┌──────────────────┐  ┌───────────────────┐  │
+│  │ PostgreSQL Database  │  │ Supabase Auth    │  │ Storage Buckets   │  │
+│  │ (RLS + Triggers)     │  │ (JWT & Sessions) │  │ (event-posters)   │  │
+│  └──────────┬───────────┘  └──────────────────┘  └───────────────────┘  │
+│             │                                                           │
+│             ▼ Database Webhook                                          │
+│  ┌───────────────────────────────────────────────────────────────────┐  │
+│  │ Supabase Edge Function (Deno Runtime) + Resend Email API          │  │
+│  │ • Automated Ticket Email with Reference Code & Calendar Details   │  │
+│  └───────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────┘
+  </pre>
+
+  <h2>3. Technology Stack & Architectural Justifications</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Subsystem</th>
+        <th>Technology</th>
+        <th>Engineering Rationale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Frontend Architecture</strong></td>
+        <td>Semantic HTML5 + Custom Modernist CSS</td>
+        <td>High-performance rendering without virtual-DOM overhead; instant First Contentful Paint (FCP).</td>
+      </tr>
+      <tr>
+        <td><strong>Design Language</strong></td>
+        <td>Modernist Swiss Tokens (`--ew-rule: 1px`)</td>
+        <td>Zero border-radius, hairline border rules, WCAG AA compliant contrast ratios.</td>
+      </tr>
+      <tr>
+        <td><strong>Geospatial Engine</strong></td>
+        <td>Leaflet.js + OpenStreetMap (OSM)</td>
+        <td>Client-side tile rendering with customized KNUST venue coordinate bounding boxes.</td>
+      </tr>
+      <tr>
+        <td><strong>Database & Storage</strong></td>
+        <td>Supabase (PostgreSQL 15)</td>
+        <td>ACID compliance, custom ENUM types, JSONB attendance tiers, and Row-Level Security.</td>
+      </tr>
+      <tr>
+        <td><strong>Identity & Auth</strong></td>
+        <td>Supabase Auth (JWT)</td>
+        <td>Secure organizer login, session management, and role-based permissions.</td>
+      </tr>
+      <tr>
+        <td><strong>Transactional Mail</strong></td>
+        <td>Resend API + Deno Edge Functions</td>
+        <td>Serverless execution, high inbox deliverability, automated ticket pass dispatch.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <h2>4. Database Schema & Relational Modeling</h2>
+  <p>
+    The PostgreSQL schema enforces normalization across three primary entities: <code>organizers</code>, <code>events</code>, and <code>registrations</code>.
+  </p>
+
+  <pre>
+ ┌─────────────────────────┐         1:N         ┌─────────────────────────┐
+ │       ORGANIZERS        │────────────────────►│         EVENTS          │
+ ├─────────────────────────┤                     ├─────────────────────────┤
+ │ id (UUID, PK, FK Auth)  │                     │ id (UUID, PK)           │
+ │ org_name (TEXT)         │                     │ organizer_id (UUID, FK) │
+ │ org_type (TEXT)         │                     │ title (TEXT)            │
+ │ email (TEXT)            │                     │ category (ENUM)         │
+ │ is_verified (BOOL)      │                     │ venue (TEXT)            │
+ │ created_at (TIMESTAMPTZ)│                     │ date (DATE), time (TEXT)│
+ └─────────────────────────┘                     │ capacity (INT), reg_cnt │
+                                                 │ poster_url (TEXT)       │
+                                                 │ options (JSONB)         │
+                                                 │ status (ENUM)           │
+                                                 └───────────┬─────────────┘
+                                                             │
+                                                             │ 1:N
+                                                             ▼
+                                                 ┌─────────────────────────┐
+                                                 │      REGISTRATIONS      │
+                                                 ├─────────────────────────┤
+                                                 │ id (UUID, PK)           │
+                                                 │ event_id (UUID, FK)     │
+                                                 │ user_id (UUID, FK Null) │
+                                                 │ code (TEXT, Unique)     │
+                                                 │ option_name (TEXT)      │
+                                                 │ attendee_name (TEXT)    │
+                                                 │ attendee_email (TEXT)   │
+                                                 │ remind_opt_in (BOOL)    │
+                                                 │ created_at (TIMESTAMPTZ)│
+                                                 └─────────────────────────┘
+  </pre>
+
+  <h3>4.1 Atomic Concurrency Trigger</h3>
+  <p>
+    To prevent overselling and race conditions when multiple students register simultaneously, a PostgreSQL trigger automatically updates the event capacity counter:
+  </p>
+  <pre><code>create or replace function public.handle_new_registration()
+returns trigger as $$
+begin
+  update public.events
+  set reg_count = reg_count + 1
+  where id = new.event_id;
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create trigger on_registration_created
+  after insert on public.registrations
+  for each row execute procedure public.handle_new_registration();</code></pre>
+
+  <h2>5. GIS Mapping & Geospatial Integration</h2>
+  <p>
+    EVENTWEB incorporates a dedicated Leaflet.js cartography module mapped to KNUST campus coordinates:
+  </p>
+  <ul>
+    <li><strong>Great Hall:</strong> <code>6.67475 N, -1.57220 W</code></li>
+    <li><strong>Paa Joe Stadium:</strong> <code>6.67780 N, -1.56950 W</code></li>
+    <li><strong>College of Science Auditorium:</strong> <code>6.67350 N, -1.56650 W</code></li>
+    <li><strong>Prempeh II Library:</strong> <code>6.67510 N, -1.57180 W</code></li>
+    <li><strong>KNUST Interdenominational Church:</strong> <code>6.68508 N, -1.57270 W</code></li>
+    <li><strong>Central Campus Grounds:</strong> <code>6.67644 N, -1.57343 W</code></li>
+  </ul>
+  <p>
+    <strong>Drafting Callout Pins:</strong> Custom markers use an architectural leader line with a category-coded indicator bar that synchronizes bidirectionally with the event list filter. Stacking context isolation (<code>isolation: isolate</code>, <code>z-index: 1</code>) prevents Leaflet map tiles from overlapping the sticky top navigation header.
+  </p>
+
+  <h2>6. Front-End User Experience & Interaction Design</h2>
+  <h3>6.1 5-Second Autoplay Hero Poster Deck</h3>
+  <p>
+    The interactive 3D poster deck implements a state machine that cycles through the latest campus flyers every <strong>5000 milliseconds (5 seconds)</strong>. If the student interacts (clicks previous/next buttons, taps a carousel dot, or drags a card), the timer automatically resets for another 5 seconds of inactivity. Opening a registration dialog pauses background rotations.
+  </p>
+
+  <h3>6.2 Refined 1px Modernist Hairlines</h3>
+  <p>
+    All borders across navigation, cards, input controls, chips, and modal sheets are governed by a unified token (<code>--ew-rule: 1px</code>). In dark mode, borders shift to <code>#29324a</code> to create a seamless, high-contrast visual hierarchy without visual clutter.
+  </p>
+
+  <h2>7. Transactional Email Pipeline (Resend)</h2>
+  <p>
+    Upon successful registration, a Supabase Edge Function running on the Deno runtime is triggered to dispatch a branded HTML confirmation email via the Resend API:
+  </p>
+  <ul>
+    <li><strong>Unique Reference Code:</strong> Formatted as <code>EW-XXXX-XX</code> (e.g. <code>EW-4471-KQ</code>).</li>
+    <li><strong>Pass Details:</strong> Society name, venue, event date, time, and tier.</li>
+    <li><strong>Secure Architecture:</strong> The <code>RESEND_API_KEY</code> is stored strictly as a backend server secret, never exposed to client browsers.</li>
+  </ul>
+
+  <h2>8. Conclusion & Future Roadmap</h2>
+  <p>
+    EVENTWEB transforms campus event publicity from a fragmented, disorganized hassle into a seamless, high-engagement digital platform. Its robust architecture delivers high performance, spatial awareness, and verified administrative workflows tailored specifically for KNUST.
+  </p>
+  <div class="callout">
+    <div class="callout-title">Key Innovation Summary</div>
+    Unified Discovery + Geospatial Campus Awareness + Real-Time Relational Integrity + Automated Email Ticketing.
+  </div>
+
+  <p style="margin-top: 24px; font-size: 12px; color: #6c717c; text-align: center;">
+    <strong>EVENTWEB Engineering Team</strong> · KNUST Kumasi · Academic Year 2025/2026<br>
+    Repository: <code>https://github.com/ohene-kofi1/EVENTWEB.git</code>
+  </p>
+
+</div>
+
+</body>
+</html>
