@@ -152,6 +152,36 @@
   <h1>Technical Report</h1>
 </div>
 
+<h2>List of Technical Abbreviations and Acronyms</h2>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th style="width: 25%;">Acronym</th>
+      <th style="width: 75%;">Full Expanded Form (Definition)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>GIS</strong></td><td>Geographic Information System</td></tr>
+    <tr><td><strong>API</strong></td><td>Application Programming Interface</td></tr>
+    <tr><td><strong>REST</strong></td><td>Representational State Transfer</td></tr>
+    <tr><td><strong>RLS</strong></td><td>Row-Level Security (PostgreSQL Access Policy)</td></tr>
+    <tr><td><strong>JWT</strong></td><td>JSON Web Token (Authentication Token)</td></tr>
+    <tr><td><strong>JSON / JSONB</strong></td><td>JavaScript Object Notation / Binary JavaScript Object Notation</td></tr>
+    <tr><td><strong>SQL</strong></td><td>Structured Query Language</td></tr>
+    <tr><td><strong>ACID</strong></td><td>Atomicity, Consistency, Isolation, Durability (Database Transaction Properties)</td></tr>
+    <tr><td><strong>DOM</strong></td><td>Document Object Model (Browser Document Tree)</td></tr>
+    <tr><td><strong>FCP</strong></td><td>First Contentful Paint (Web Performance Metric)</td></tr>
+    <tr><td><strong>FOUC</strong></td><td>Flash of Unstyled Content</td></tr>
+    <tr><td><strong>WCAG</strong></td><td>Web Content Accessibility Guidelines</td></tr>
+    <tr><td><strong>OSM</strong></td><td>OpenStreetMap (Open-Source Geographic Data)</td></tr>
+    <tr><td><strong>SVG</strong></td><td>Scalable Vector Graphics</td></tr>
+    <tr><td><strong>CDN</strong></td><td>Content Delivery Network</td></tr>
+    <tr><td><strong>UUID</strong></td><td>Universally Unique Identifier</td></tr>
+    <tr><td><strong>PK / FK</strong></td><td>Primary Key / Foreign Key (Relational Database Constraints)</td></tr>
+    <tr><td><strong>KNUST</strong></td><td>Kwame Nkrumah University of Science and Technology</td></tr>
+  </tbody>
+</table>
+
 <h2>1. Introduction and Background</h2>
 <p>
   At Kwame Nkrumah University of Science and Technology (KNUST), campus life is driven by an active student body and numerous associations organizing hundreds of extracurricular, academic, professional, and social events each semester. These range from academic conferences, symposiums, and software hackathons to society dinners, sports tournaments, night markets, and religious fellowships.
@@ -166,11 +196,11 @@
 </p>
 <ul>
   <li><strong>Information Scattering:</strong> Students frequently miss relevant developmental programs due to uncoordinated publicity channels.</li>
-  <li><strong>Geospatial Ambiguity:</strong> Navigating diverse venue locations across campus—such as the Great Hall, Paa Joe Stadium, College of Science Auditorium, and Prempeh II Library—is challenging without integrated maps.</li>
+  <li><strong>Geospatial Ambiguity:</strong> Navigating diverse venue locations across campus—such as the Great Hall, Paa Joe Stadium, College of Science Auditorium, and Prempeh II Library—is challenging without an integrated Geographic Information System (GIS).</li>
   <li><strong>Capacity and Roster Bottlenecks:</strong> Student societies lack real-time registration caps and verified attendee rosters, causing hall overcrowding or unexpected empty seats.</li>
 </ul>
 <p class="no-indent">
-  <strong>Project Objectives:</strong> The objective of EVENTWEB is to design and implement an institutional-grade platform that unifies event discovery, provides spatial navigation on an interactive campus map, automates ticket reservation with unique verification codes, and provides verified societies with an administrative management dashboard.
+  <strong>Project Objectives:</strong> The objective of EVENTWEB is to design and implement an institutional-grade platform that aggregates all campus events into five distinct tracks (Academic, Social, Sports, Religious, Business), provides spatial navigation on an interactive campus map, automates ticket reservation with unique verification codes, and provides verified organizers with an event administration console.
 </p>
 
 <h2>3. System Architecture and Frontend Layer Stack</h2>
@@ -183,12 +213,12 @@
   The frontend is architected as an ultra-fast, zero-overhead client layer prioritizing sub-second First Contentful Paint (FCP) and high visual fidelity without the heavy execution overhead of bloated single-page application frameworks. The presentation layer comprises five coordinated engineering subsystems:
 </p>
 <ul>
-  <li><strong>Declarative Component State Engine (`DCLogic`):</strong> Rather than relying on heavy virtual-DOM abstraction layers, the frontend utilizes an efficient reactive component architecture. The core component state maintains centralized reactive properties (`cat`, `query`, `sort`, `venue`, `openId`, `hero`, `autoplay`, `dragX`, `dragging`). Component lifecycles (`componentDidMount`, `componentDidUpdate`, `componentWillUnmount`) manage background timers, custom DOM event bindings, and bi-directional synchronization with the GIS map.</li>
-  <li><strong>Modernist CSS Design System & Custom Property Tokens:</strong> All visual styling is centralized inside a formal token layer (`eventweb.css`). The system enforces three core visual rules:
+  <li><strong>Declarative Component State Engine (`DCLogic`):</strong> Rather than relying on heavy Document Object Model (DOM) virtual abstraction layers, the frontend utilizes an efficient reactive component architecture. The core component state maintains centralized reactive properties (`cat`, `query`, `sort`, `venue`, `openId`, `hero`, `autoplay`, `dragX`, `dragging`). Component lifecycles (`componentDidMount`, `componentDidUpdate`, `componentWillUnmount`) manage background timers, custom DOM event bindings, and bi-directional synchronization with the Geographic Information System (GIS) map.</li>
+  <li><strong>Modernist CSS Design System & Custom Property Tokens:</strong> All visual styling is centralized inside a formal Cascading Style Sheets (CSS) token layer (`eventweb.css`). The system enforces three core visual rules:
     <ul>
       <li><em>Zero-Radius Philosophy (`--ew-radius: 0px`):</em> Strict modernist/Swiss design principles where cards, buttons, tags, chips, and modal sheets feature razor-sharp geometric edges.</li>
       <li><em>1px Precision Hairline Boundaries (`--ew-rule: 1px`):</em> Replaced thick neo-brutalist borders with clean 1px hairlines (`--ew-rule-color`) allowing cards, sticky headers, and input controls to blend seamlessly.</li>
-      <li><em>Curated Color Ramps & WCAG AA Contrast:</em> Brand blue (`#1a3ee8`) clears a 7.25:1 contrast ratio on light grounds; dark mode automatically adjusts background tokens (`--ew-bg: #090a0f`) and surface borders (`--ew-rule-color: #29324a`) with zero Flash of Unstyled Content (FOUC).</li>
+      <li><em>Curated Color Ramps & WCAG AA Contrast:</em> Brand blue (`#1a3ee8`) clears a 7.25:1 contrast ratio on light grounds adhering to Web Content Accessibility Guidelines (WCAG) Level AA; dark mode automatically adjusts background tokens (`--ew-bg: #090a0f`) and surface borders (`--ew-rule-color: #29324a`) with zero Flash of Unstyled Content (FOUC).</li>
     </ul>
   </li>
   <li><strong>3D Perspective Hero Deck & Gesture Physics Engine:</strong> The hero section renders an interactive 3D poster deck where card offsets, rotation angles, scale factors, and opacity layers are computed deterministically (Card 0 at scale 1.0, z-index 30; Card 1 at scale 0.86, z-index 20; Card 2 at scale 0.74, z-index 10). The gesture physics engine hooks into Pointer Events (`pointerdown`, `pointermove`, `pointerup`), tracking touch/mouse drag displacement with a 70px release threshold that snaps to adjacent cards or springs back fluidly.</li>
@@ -209,37 +239,37 @@
     <tr>
       <td>Frontend UI</td>
       <td>HTML5 & Vanilla JavaScript</td>
-      <td>Eliminates heavy framework bundle overhead; provides sub-second first contentful paint.</td>
+      <td>Eliminates heavy framework bundle overhead; provides sub-second First Contentful Paint (FCP).</td>
     </tr>
     <tr>
       <td>Design Language</td>
       <td>Modernist CSS (1px rules)</td>
-      <td>Zero border-radius, clean hairline rules, and full WCAG AA contrast compliance.</td>
+      <td>Zero border-radius, clean hairline rules, and full Web Content Accessibility Guidelines (WCAG) compliance.</td>
     </tr>
     <tr>
       <td>Spatial GIS</td>
       <td>Leaflet.js + OSM Cartography</td>
-      <td>Lightweight client-side map rendering with accurate KNUST campus venue coordinates.</td>
+      <td>Lightweight client-side Geographic Information System map rendering with accurate KNUST campus venue coordinates.</td>
     </tr>
     <tr>
       <td>Relational Database</td>
       <td>Supabase (PostgreSQL 15)</td>
-      <td>ACID transaction guarantees, atomic capacity triggers, and native Row-Level Security.</td>
+      <td>ACID transaction guarantees, atomic capacity triggers, and native Row-Level Security (RLS).</td>
     </tr>
     <tr>
       <td>Authentication</td>
       <td>Supabase Auth (JWT)</td>
-      <td>Role-based separation between public student attendees and verified society organizers.</td>
+      <td>Role-based separation via JSON Web Tokens between public student attendees and verified society organizers.</td>
     </tr>
     <tr>
       <td>Object Storage</td>
       <td>Supabase Storage (`event-posters`)</td>
-      <td>CDN-backed image storage with secure authenticated write permissions.</td>
+      <td>Content Delivery Network (CDN) backed image storage with secure authenticated write permissions.</td>
     </tr>
     <tr>
       <td>Email Dispatch</td>
       <td>Resend API + Edge Functions</td>
-      <td>Serverless execution ensuring high deliverability without exposing private keys.</td>
+      <td>Serverless Application Programming Interface (API) execution ensuring high deliverability without exposing private keys.</td>
     </tr>
   </tbody>
 </table>
@@ -248,17 +278,17 @@
 
 <h2>5. Relational Database Design and Data Integrity</h2>
 <p>
-  The database schema is normalized into three core relational entities to ensure consistency and eliminate data redundancy:
+  The database schema is normalized across three core relational entities to ensure consistency and eliminate data redundancy:
 </p>
 <ul>
-  <li><strong>Organizers (`organizers`):</strong> Stores verified society and faculty organizer profiles linked directly to Supabase Auth (`auth.users.id`). Fields include `org_name`, `org_type` (Society, Faculty, Club, Committee), `email`, and `is_verified`.</li>
-  <li><strong>Events (`events`):</strong> Stores event metadata including title, category ENUM (Academic, Social, Sports, Religious, Business), venue name, date, time, total capacity, registered count, poster image URL, and JSONB attendance options.</li>
-  <li><strong>Registrations (`registrations`):</strong> Records individual student ticket reservations. Each row contains a foreign key reference to `events.id`, an optional reference to `user_id`, a unique door check-in reference code (`EW-XXXX-XX`), the selected tier name, and reminder opt-in status.</li>
+  <li><strong>Organizers (`organizers`):</strong> Stores verified society and faculty organizer profiles linked directly to Supabase Auth (`auth.users.id`). Fields include Universally Unique Identifier (`id` as Primary Key), `org_name`, `org_type` (Society, Faculty, Club, Committee), `email`, and `is_verified`.</li>
+  <li><strong>Events (`events`):</strong> Stores event metadata including title, category ENUM (Academic, Social, Sports, Religious, Business), venue name, date, time, total capacity, registered count, poster image URL, and Binary JSON (`options` as JSONB) attendance tiers.</li>
+  <li><strong>Registrations (`registrations`):</strong> Records individual student ticket reservations. Each row contains a Foreign Key (FK) reference to `events.id`, an optional reference to `user_id`, a unique door check-in reference code (`EW-XXXX-XX`), the selected tier name, and reminder opt-in status.</li>
 </ul>
 
 <h3>5.1 Atomic Concurrency Trigger for Capacity Management</h3>
 <p>
-  To prevent race conditions during concurrent registrations, an atomic PostgreSQL trigger increments `reg_count` on the event table immediately upon valid row insertion:
+  To prevent race conditions during concurrent registrations, an atomic Structured Query Language (SQL) trigger function increments `reg_count` on the event table immediately upon valid row insertion:
 </p>
 <pre class="code-snippet">
 CREATE OR REPLACE FUNCTION public.handle_new_registration()
@@ -276,12 +306,12 @@ CREATE TRIGGER on_registration_created
 
 <h3>5.2 Security and Row-Level Security (RLS)</h3>
 <p>
-  Row-Level Security is enforced across all tables. Public anonymous users have `SELECT` access only to published events and `INSERT` permissions to register. Organizers are restricted via `auth.uid() = organizer_id` so that they can only modify or view attendance rosters for events they have created.
+  Row-Level Security (RLS) is enforced across all tables. Public anonymous users have `SELECT` access only to published events and `INSERT` permissions to register. Organizers are restricted via `auth.uid() = organizer_id` so that they can only modify or view attendance rosters for events they have created.
 </p>
 
 <h2>6. Geospatial Mapping and Campus Venue Coordinates</h2>
 <p>
-  To assist students in locating event venues across KNUST, EVENTWEB integrates a dedicated Leaflet GIS module mapped to calibrated campus coordinates:
+  To assist students in locating event venues across KNUST, EVENTWEB integrates a dedicated Leaflet Geographic Information System (GIS) module mapped to calibrated campus coordinates:
 </p>
 <ul>
   <li><strong>Great Hall:</strong> 6.67475° N, -1.57220° W (Main Ceremonial Hall and Matriculation/Congregation Auditorium)</li>
@@ -292,12 +322,12 @@ CREATE TRIGGER on_registration_created
   <li><strong>Central Campus / Brunei Complex:</strong> 6.67644° N, -1.57343° W (Night Markets, Fusion Festivals)</li>
 </ul>
 <p>
-  The mapping layer uses architectural drafting pins with category-coded color indicators. Selecting an event in the list smoothly pans the map viewport to that venue, while tapping a map marker instantly filters the event roster.
+  The mapping layer uses Scalable Vector Graphics (SVG) drafting pins with category-coded color indicators. Selecting an event in the list smoothly pans the map viewport to that venue, while tapping a map marker instantly filters the event roster.
 </p>
 
 <h2>7. Transactional Pass and Reminder Pipeline (Resend)</h2>
 <p>
-  When a student registers, Supabase triggers a serverless Edge Function running on the Deno runtime. This function calls the Resend REST API to dispatch an immediate confirmation pass containing the event title, flyer thumbnail, society name, date, venue, and unique entry verification code (`EW-XXXX-XX`). API keys are securely stored in server environment variables and never exposed to client browsers.
+  When a student registers, Supabase triggers a serverless Edge Function running on the Deno runtime. This function calls the Resend REST Application Programming Interface (API) to dispatch an immediate confirmation pass containing the event title, flyer thumbnail, society name, date, venue, and unique entry verification code (`EW-XXXX-XX`). API keys are securely stored in server environment variables and never exposed to client browsers.
 </p>
 
 <h2>8. Conclusion</h2>

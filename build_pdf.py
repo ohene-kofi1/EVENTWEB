@@ -1,7 +1,7 @@
 """
-Generates a comprehensive, academically expanded Technical Report PDF for EVENTWEB.
-Deeply elaborates on the Frontend Layer Stack, Component State Machine, Design System,
-and GIS Spatial Architecture.
+Generates a comprehensive, publication-grade Technical Report PDF for EVENTWEB.
+Includes a dedicated Abbreviations and Acronyms reference table and spells out
+all technical acronyms on their first occurrences.
 """
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
@@ -73,48 +73,82 @@ def build_pdf():
     h1_style = ParagraphStyle(
         'SectionH1',
         fontName='Times-Bold',
-        fontSize=12.5,
-        leading=16,
+        fontSize=12,
+        leading=15.5,
         textColor=colors.black,
-        spaceBefore=14,
-        spaceAfter=6,
+        spaceBefore=13,
+        spaceAfter=5,
         keepWithNext=True
     )
     
     h2_style = ParagraphStyle(
         'SectionH2',
         fontName='Times-BoldItalic',
-        fontSize=10.5,
-        leading=14,
+        fontSize=10,
+        leading=13.5,
         textColor=colors.black,
-        spaceBefore=9,
-        spaceAfter=4,
+        spaceBefore=8,
+        spaceAfter=3,
         keepWithNext=True
     )
     
     body_style = ParagraphStyle(
         'BodyText',
         fontName='Times-Roman',
-        fontSize=9.5,
-        leading=14,
+        fontSize=9,
+        leading=13,
         textColor=colors.black,
-        spaceAfter=6,
+        spaceAfter=5,
         alignment=4
     )
     
     bullet_style = ParagraphStyle(
         'BulletText',
         parent=body_style,
-        leftIndent=18,
-        firstLineIndent=-12,
-        spaceAfter=4
+        leftIndent=16,
+        firstLineIndent=-10,
+        spaceAfter=3
     )
 
     story = []
 
     # Title
     story.append(Paragraph("Technical Report", title_style))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.black, spaceBefore=0, spaceAfter=14))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.black, spaceBefore=0, spaceAfter=10))
+
+    # Abbreviations Reference Section
+    story.append(Paragraph("List of Technical Abbreviations and Acronyms", h1_style))
+    abbrev_data = [
+        [Paragraph("<b>Acronym</b>", body_style), Paragraph("<b>Full Expanded Form (Definition)</b>", body_style)],
+        [Paragraph("<b>GIS</b>", body_style), Paragraph("Geographic Information System", body_style)],
+        [Paragraph("<b>API</b>", body_style), Paragraph("Application Programming Interface", body_style)],
+        [Paragraph("<b>REST</b>", body_style), Paragraph("Representational State Transfer", body_style)],
+        [Paragraph("<b>RLS</b>", body_style), Paragraph("Row-Level Security (PostgreSQL Access Policy)", body_style)],
+        [Paragraph("<b>JWT</b>", body_style), Paragraph("JSON Web Token (Authentication Token)", body_style)],
+        [Paragraph("<b>JSON / JSONB</b>", body_style), Paragraph("JavaScript Object Notation / Binary JavaScript Object Notation", body_style)],
+        [Paragraph("<b>SQL</b>", body_style), Paragraph("Structured Query Language", body_style)],
+        [Paragraph("<b>ACID</b>", body_style), Paragraph("Atomicity, Consistency, Isolation, Durability (Database Transaction Properties)", body_style)],
+        [Paragraph("<b>DOM</b>", body_style), Paragraph("Document Object Model (Browser Document Tree)", body_style)],
+        [Paragraph("<b>FCP</b>", body_style), Paragraph("First Contentful Paint (Web Performance Metric)", body_style)],
+        [Paragraph("<b>FOUC</b>", body_style), Paragraph("Flash of Unstyled Content", body_style)],
+        [Paragraph("<b>WCAG</b>", body_style), Paragraph("Web Content Accessibility Guidelines", body_style)],
+        [Paragraph("<b>OSM</b>", body_style), Paragraph("OpenStreetMap (Open-Source Geographic Data)", body_style)],
+        [Paragraph("<b>SVG</b>", body_style), Paragraph("Scalable Vector Graphics", body_style)],
+        [Paragraph("<b>CDN</b>", body_style), Paragraph("Content Delivery Network", body_style)],
+        [Paragraph("<b>UUID</b>", body_style), Paragraph("Universally Unique Identifier", body_style)],
+        [Paragraph("<b>PK / FK</b>", body_style), Paragraph("Primary Key / Foreign Key (Relational Database Constraints)", body_style)],
+        [Paragraph("<b>KNUST</b>", body_style), Paragraph("Kwame Nkrumah University of Science and Technology", body_style)],
+    ]
+    t_abbrev = Table(abbrev_data, colWidths=[90, 414])
+    t_abbrev.setStyle(TableStyle([
+        ('LINEABOVE', (0, 0), (-1, 0), 1, colors.black),
+        ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),
+        ('LINEBELOW', (0, -1), (-1, -1), 1, colors.black),
+        ('PADDING', (0, 0), (-1, -1), 2.5),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ]))
+    story.append(t_abbrev)
+    story.append(Spacer(1, 8))
 
     # Section 1
     story.append(Paragraph("1. Introduction and Background", h1_style))
@@ -134,14 +168,14 @@ def build_pdf():
         body_style
     ))
     story.append(Paragraph("• <b>Information Scattering:</b> Students frequently miss relevant developmental programs due to uncoordinated publicity channels.", bullet_style))
-    story.append(Paragraph("• <b>Geospatial Ambiguity:</b> Navigating diverse venue locations across campus—such as the Great Hall, Paa Joe Stadium, College of Science Auditorium, and Prempeh II Library—is challenging without integrated maps.", bullet_style))
+    story.append(Paragraph("• <b>Geospatial Ambiguity:</b> Navigating diverse venue locations across campus—such as the Great Hall, Paa Joe Stadium, College of Science Auditorium, and Prempeh II Library—is challenging without an integrated Geographic Information System (GIS).", bullet_style))
     story.append(Paragraph("• <b>Capacity and Roster Bottlenecks:</b> Student societies lack real-time registration caps and verified attendee rosters, causing hall overcrowding or unexpected empty seats.", bullet_style))
     story.append(Paragraph(
         "The primary objective of EVENTWEB is to design and implement an institutional-grade platform that unifies event discovery, provides spatial navigation on an interactive campus map, automates ticket reservation with unique verification codes, and provides verified societies with an administrative management dashboard.",
         body_style
     ))
 
-    # Section 3: Architecture & Deep Frontend Expansion
+    # Section 3: Architecture & Detailed Frontend Layer Stack
     story.append(Paragraph("3. System Architecture and Frontend Layer Stack", h1_style))
     story.append(Paragraph(
         "EVENTWEB is engineered following a decoupled, three-tier cloud software architecture consisting of an ultra-high-performance client presentation layer, a managed relational database layer, and a serverless notification engine.",
@@ -156,19 +190,19 @@ def build_pdf():
     
     story.append(Paragraph(
         "<b>1. Declarative Component State Engine (`DCLogic`):</b><br/>"
-        "Rather than relying on heavy virtual-DOM abstraction layers, the frontend utilizes an efficient reactive component architecture. "
+        "Rather than relying on heavy Document Object Model (DOM) virtual abstraction layers, the frontend utilizes an efficient reactive component architecture. "
         "The core component state maintains centralized reactive properties (`cat`, `query`, `sort`, `venue`, `openId`, `hero`, `autoplay`, `dragX`, `dragging`). "
         "Component lifecycles (`componentDidMount`, `componentDidUpdate`, `componentWillUnmount`) manage background timers, custom DOM event bindings, "
-        "and bi-directional synchronization with the GIS map.",
+        "and bi-directional synchronization with the Geographic Information System (GIS) map.",
         body_style
     ))
     
     story.append(Paragraph(
         "<b>2. Modernist CSS Design System & Custom Property Tokens:</b><br/>"
-        "All visual styling is centralized inside a formal token layer (`eventweb.css`). The system enforces three core visual rules:<br/>"
+        "All visual styling is centralized inside a formal Cascading Style Sheets (CSS) token layer (`eventweb.css`). The system enforces three core visual rules:<br/>"
         "• <i>Zero-Radius Philosophy (`--ew-radius: 0px`):</i> Strict modernist/Swiss design principles where cards, buttons, tags, chips, and modal sheets feature razor-sharp geometric edges.<br/>"
         "• <i>1px Precision Hairline Boundaries (`--ew-rule: 1px`):</i> Replaced thick neo-brutalist borders with clean 1px hairlines (`--ew-rule-color`) allowing cards, sticky headers, and input controls to blend seamlessly.<br/>"
-        "• <i>Curated Color Ramps & WCAG AA Contrast:</i> Brand blue (`#1a3ee8`) clears a 7.25:1 contrast ratio on light grounds; dark mode automatically adjusts background tokens (`--ew-bg: #090a0f`) and surface borders (`--ew-rule-color: #29324a`) with zero Flash of Unstyled Content (FOUC).",
+        "• <i>Curated Color Ramps & WCAG AA Contrast:</i> Brand blue (`#1a3ee8`) clears a 7.25:1 contrast ratio on light grounds adhering to Web Content Accessibility Guidelines (WCAG) Level AA; dark mode automatically adjusts background tokens (`--ew-bg: #090a0f`) and surface borders (`--ew-rule-color: #29324a`) with zero Flash of Unstyled Content (FOUC).",
         body_style
     ))
 
@@ -204,38 +238,38 @@ def build_pdf():
     story.append(Paragraph("4. Technical Stack Justification", h1_style))
     stack_data = [
         [Paragraph("<b>Component</b>", body_style), Paragraph("<b>Technology</b>", body_style), Paragraph("<b>Technical Justification</b>", body_style)],
-        [Paragraph("Frontend UI", body_style), Paragraph("Semantic HTML5 & Vanilla JS", body_style), Paragraph("Eliminates heavy framework bundle overhead; provides sub-second first contentful paint.", body_style)],
-        [Paragraph("Design System", body_style), Paragraph("Modernist CSS (1px rules)", body_style), Paragraph("Zero border-radius, clean hairline rules, and full WCAG AA contrast compliance.", body_style)],
-        [Paragraph("Spatial GIS", body_style), Paragraph("Leaflet.js + OSM Cartography", body_style), Paragraph("Lightweight client-side map rendering with accurate KNUST campus venue coordinates.", body_style)],
-        [Paragraph("Relational Database", body_style), Paragraph("Supabase (PostgreSQL 15)", body_style), Paragraph("ACID transaction guarantees, atomic capacity triggers, and native Row-Level Security.", body_style)],
-        [Paragraph("Authentication", body_style), Paragraph("Supabase Auth (JWT)", body_style), Paragraph("Role-based separation between public student attendees and verified society organizers.", body_style)],
-        [Paragraph("Object Storage", body_style), Paragraph("Supabase Storage (`event-posters`)", body_style), Paragraph("CDN-backed image storage with secure authenticated write permissions.", body_style)],
-        [Paragraph("Email Dispatch", body_style), Paragraph("Resend API + Edge Functions", body_style), Paragraph("Serverless execution ensuring high deliverability without exposing private keys.", body_style)]
+        [Paragraph("Frontend UI", body_style), Paragraph("HTML5 & Vanilla JavaScript", body_style), Paragraph("Eliminates heavy framework bundle overhead; provides sub-second First Contentful Paint (FCP).", body_style)],
+        [Paragraph("Design System", body_style), Paragraph("Modernist CSS (1px rules)", body_style), Paragraph("Zero border-radius, clean hairline rules, and full Web Content Accessibility Guidelines (WCAG) compliance.", body_style)],
+        [Paragraph("Spatial GIS", body_style), Paragraph("Leaflet.js + OSM Cartography", body_style), Paragraph("Lightweight client-side Geographic Information System map rendering with accurate KNUST campus venue coordinates.", body_style)],
+        [Paragraph("Relational Database", body_style), Paragraph("Supabase (PostgreSQL 15)", body_style), Paragraph("ACID transaction guarantees, atomic capacity triggers, and native Row-Level Security (RLS).", body_style)],
+        [Paragraph("Authentication", body_style), Paragraph("Supabase Auth (JWT)", body_style), Paragraph("Role-based separation via JSON Web Tokens between public student attendees and verified society organizers.", body_style)],
+        [Paragraph("Object Storage", body_style), Paragraph("Supabase Storage (`event-posters`)", body_style), Paragraph("Content Delivery Network (CDN) backed image storage with secure authenticated write permissions.", body_style)],
+        [Paragraph("Email Dispatch", body_style), Paragraph("Resend API + Edge Functions", body_style), Paragraph("Serverless Application Programming Interface (API) execution ensuring high deliverability without exposing private keys.", body_style)]
     ]
     t_stack = Table(stack_data, colWidths=[95, 135, 274])
     t_stack.setStyle(TableStyle([
         ('LINEABOVE', (0, 0), (-1, 0), 1, colors.black),
         ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),
         ('LINEBELOW', (0, -1), (-1, -1), 1, colors.black),
-        ('PADDING', (0, 0), (-1, -1), 4),
+        ('PADDING', (0, 0), (-1, -1), 3),
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
     ]))
     story.append(t_stack)
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 8))
 
     # Section 5: Database Engineering
     story.append(Paragraph("5. Relational Database Design and Data Integrity", h1_style))
     story.append(Paragraph(
-        "The relational database schema is normalized across three core tables to guarantee referential integrity and eliminate redundancy:",
+        "The relational database schema is normalized across three core tables to guarantee referential integrity and eliminate data redundancy:",
         body_style
     ))
-    story.append(Paragraph("• <b>Organizers Table (`organizers`):</b> Stores society and faculty organizer profiles linked directly to Supabase Auth (`auth.users.id`). Fields include `org_name`, `org_type` (Society, Faculty, Club, Committee), `email`, and `is_verified`.", bullet_style))
-    story.append(Paragraph("• <b>Events Table (`events`):</b> Stores comprehensive event metadata including title, category ENUM (Academic, Social, Sports, Religious, Business), venue name, date, time, total capacity, registered count, poster image URL, and JSONB attendance options.", bullet_style))
-    story.append(Paragraph("• <b>Registrations Table (`registrations`):</b> Records individual student ticket reservations. Each row contains a foreign key reference to `events.id`, an optional reference to `user_id`, a unique door check-in reference code (`EW-XXXX-XX`), the selected tier name, and reminder opt-in status.", bullet_style))
+    story.append(Paragraph("• <b>Organizers Table (`organizers`):</b> Stores society and faculty organizer profiles linked directly to Supabase Auth (`auth.users.id`). Fields include Universally Unique Identifier (`id` as Primary Key), `org_name`, `org_type` (Society, Faculty, Club, Committee), `email`, and `is_verified`.", bullet_style))
+    story.append(Paragraph("• <b>Events Table (`events`):</b> Stores comprehensive event metadata including title, category ENUM (Academic, Social, Sports, Religious, Business), venue name, date, time, total capacity, registered count, poster image URL, and Binary JSON (`options` as JSONB) attendance tiers.", bullet_style))
+    story.append(Paragraph("• <b>Registrations Table (`registrations`):</b> Records individual student ticket reservations. Each row contains a Foreign Key (FK) reference to `events.id`, an optional reference to `user_id`, a unique door check-in reference code (`EW-XXXX-XX`), the selected tier name, and reminder opt-in status.", bullet_style))
 
     story.append(Paragraph("5.1 Atomic Concurrency Trigger for Capacity Management", h2_style))
     story.append(Paragraph(
-        "A critical vulnerability in event registration web applications is the race condition, where simultaneous attendee requests can lead to overbooking beyond hall limits. To prevent this, EVENTWEB implements an atomic PostgreSQL trigger function executing at the database level:",
+        "A critical vulnerability in event registration web applications is the race condition, where simultaneous attendee requests can lead to overbooking beyond hall limits. To prevent this, EVENTWEB implements an atomic Structured Query Language (SQL) trigger function executing at the database level:",
         body_style
     ))
     
@@ -251,25 +285,25 @@ def build_pdf():
         "  AFTER INSERT ON public.registrations\n"
         "  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_registration();"
     )
-    t_trig = Table([[Paragraph(f"<font face='Courier' size='8'>{trig_text.replace(chr(10), '<br/>')}</font>", body_style)]], colWidths=[504])
+    t_trig = Table([[Paragraph(f"<font face='Courier' size='7.5'>{trig_text.replace(chr(10), '<br/>')}</font>", body_style)]], colWidths=[504])
     t_trig.setStyle(TableStyle([
-        ('PADDING', (0, 0), (-1, -1), 4),
+        ('PADDING', (0, 0), (-1, -1), 3),
         ('LINEABOVE', (0, 0), (-1, 0), 0.5, colors.black),
         ('LINEBELOW', (0, -1), (-1, -1), 0.5, colors.black),
     ]))
     story.append(t_trig)
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
 
-    story.append(Paragraph("5.2 Security and Row-Level Policies (RLS)", h2_style))
+    story.append(Paragraph("5.2 Security and Row-Level Security (RLS)", h2_style))
     story.append(Paragraph(
-        "Row-Level Security is strictly enabled on all tables. Public anonymous users have `SELECT` access only to published events and `INSERT` permissions to register. Organizers are restricted via `auth.uid() = organizer_id` so that they can only modify or view attendance logs for events they have published.",
+        "Row-Level Security (RLS) is strictly enabled on all database tables. Public anonymous users have `SELECT` access only to published events and `INSERT` permissions to register. Organizers are restricted via `auth.uid() = organizer_id` so that they can only modify or view attendance logs for events they have published.",
         body_style
     ))
 
     # Section 6: GIS Mapping
     story.append(Paragraph("6. Geospatial Mapping and Campus Venue Coordinates", h1_style))
     story.append(Paragraph(
-        "To assist students in locating event venues across KNUST, EVENTWEB integrates a dedicated Leaflet GIS module mapped to calibrated campus coordinates:",
+        "To assist students in locating event venues across KNUST, EVENTWEB integrates a dedicated Leaflet Geographic Information System (GIS) module mapped to calibrated campus coordinates:",
         body_style
     ))
     story.append(Paragraph("• <b>Great Hall:</b> 6.67475° N, -1.57220° W (Main Ceremonial Hall and Matriculation/Congregation Auditorium)", bullet_style))
@@ -279,14 +313,14 @@ def build_pdf():
     story.append(Paragraph("• <b>KNUST Interdenominational Church:</b> 6.68508° N, -1.57270° W (Religious Fellowships and Services)", bullet_style))
     story.append(Paragraph("• <b>Central Campus / Brunei Complex:</b> 6.67644° N, -1.57343° W (Night Markets, Fusion Festivals)", bullet_style))
     story.append(Paragraph(
-        "The mapping layer uses architectural drafting pins with category-coded color indicators. Selecting an event in the list smoothly pans the map viewport to that venue, while tapping a map marker instantly filters the event roster.",
+        "The mapping layer uses Scalable Vector Graphics (SVG) drafting pins with category-coded color indicators. Selecting an event in the list smoothly pans the map viewport to that venue, while tapping a map marker instantly filters the event roster.",
         body_style
     ))
 
     # Section 7: Resend Email
     story.append(Paragraph("7. Transactional Pass and Reminder Pipeline (Resend)", h1_style))
     story.append(Paragraph(
-        "When a student registers, Supabase triggers a serverless Edge Function running on the Deno runtime. This function calls the Resend REST API to dispatch an immediate confirmation pass containing the event title, flyer thumbnail, society name, date, venue, and unique entry verification code (`EW-XXXX-XX`). API keys are securely stored in server environment variables and never exposed to client browsers.",
+        "When a student registers, Supabase triggers a serverless Edge Function running on the Deno runtime. This function calls the Resend REST Application Programming Interface (API) to dispatch an immediate confirmation pass containing the event title, flyer thumbnail, society name, date, venue, and unique entry verification code (`EW-XXXX-XX`). API keys are securely stored in server environment variables and never exposed to client browsers.",
         body_style
     ))
 
@@ -298,7 +332,7 @@ def build_pdf():
     ))
 
     doc.build(story, canvasmaker=AcademicNumberedCanvas)
-    print("Expanded Academic Technical Report PDF generated successfully.")
+    print("Academic Technical Report with Expanded Abbreviations generated successfully.")
 
 if __name__ == "__main__":
     build_pdf()
